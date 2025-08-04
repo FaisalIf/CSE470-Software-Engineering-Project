@@ -1,0 +1,177 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// User model for authentication and profiles
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  username      String?   @unique
+  password      String?
+  name          String?
+  image         String?
+  bio           String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  recipes       Recipe[]
+  ratings       Rating[]
+  favorites     Favorite[]
+  collections   Collection[]
+  recentViews   RecentView[]
+
+  @@map("users")
+}
+
+// Recipe model - core entity
+model Recipe {
+  id              String    @id @default(cuid())
+  title           String
+  description     String?
+  instructions    String[]
+  prepTime        Int       // in minutes
+  cookTime        Int       // in minutes
+  servings        Int       @default(4)
+  difficulty      String    @default("Medium") // Easy, Medium, Hard
+  cuisine         String?
+  category        String?   // Breakfast, Lunch, Dinner, Dessert, etc.
+  imageUrl        String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  viewCount       Int       @default(0)
+  
+  // Author relation
+  authorId        String
+  author          User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  // Relations
+  ingredients     Ingredient[]
+  ratings         Rating[]
+  favorites       Favorite[]
+  nutritionInfo   NutritionInfo?
+  collectionItems CollectionItem[]
+  recentViews     RecentView[]
+
+  @@map("recipes")
+}
+
+// Ingredient model for recipe ingredients
+model Ingredient {
+  id        String  @id @default(cuid())
+  name      String
+  amount    Float
+  unit      String  // cup, tbsp, tsp, lb, oz, etc.
+  
+  // Recipe relation
+  recipeId  String
+  recipe    Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@map("ingredients")
+}
+
+// Rating and review model
+model Rating {
+  id        String   @id @default(cuid())
+  rating    Int      // 1-5 stars
+  review    String?
+  createdAt DateTime @default(now())
+  
+  // Relations
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipeId  String
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, recipeId]) // One rating per user per recipe
+  @@map("ratings")
+}
+
+// Favorite recipes model
+model Favorite {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  
+  // Relations
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipeId  String
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, recipeId]) // One favorite per user per recipe
+  @@map("favorites")
+}
+
+// User recipe collections
+model Collection {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items       CollectionItem[]
+
+  @@map("collections")
+}
+
+// Junction table for collections and recipes
+model CollectionItem {
+  id           String     @id @default(cuid())
+  addedAt      DateTime   @default(now())
+  
+  // Relations
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  recipeId     String
+  recipe       Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([collectionId, recipeId]) // One recipe per collection
+  @@map("collection_items")
+}
+
+// Nutritional information for recipes
+model NutritionInfo {
+  id          String @id @default(cuid())
+  calories    Float?
+  protein     Float? // in grams
+  fat         Float? // in grams
+  carbs       Float? // in grams
+  fiber       Float? // in grams
+  sugar       Float? // in grams
+  sodium      Float? // in mg
+  
+  // Recipe relation (one-to-one)
+  recipeId    String @unique
+  recipe      Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@map("nutrition_info")
+}
+
+// Recently viewed recipes tracking
+model RecentView {
+  id        String   @id @default(cuid())
+  viewedAt  DateTime @default(now())
+  
+  // Relations
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipeId  String
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, recipeId]) // One recent view per user per recipe
+  @@map("recent_views")
+}
