@@ -1,0 +1,119 @@
+@startuml
+
+' Class diagram for Palate Recipe App
+
+class User {
+  +id: String
+  +email: String
+  +username: String
+  -password: String
+  +name: String
+  +image: String
+  +bio: String
+  +createdAt: DateTime
+  +updatedAt: DateTime
+  +register()
+  +login()
+  +updateProfile()
+  +addRecipe(recipe: Recipe)
+  +addFavorite(recipe: Recipe)
+  +createCollection(name: String)
+  +viewRecipe(recipe: Recipe)
+}
+
+class Recipe {
+  +id: String
+  +title: String
+  +description: String
+  +instructions: String[]
+  +prepTime: Int
+  +cookTime: Int
+  +servings: Int
+  +difficulty: String
+  +cuisine: String
+  +category: String
+  +imageUrl: String
+  +createdAt: DateTime
+  +updatedAt: DateTime
+  +viewCount: Int
+  +create()
+  +update()
+  +delete()
+  +scaleServings(newServings: Int)
+  +addRating(rating: Int, review: String)
+  +addToCollection(collection: Collection)
+}
+
+class Ingredient {
+  +id: String
+  +name: String
+  +amount: Float
+  +unit: String
+  +updateAmount(newAmount: Float)
+}
+
+class Rating {
+  +id: String
+  +rating: Int
+  +review: String
+  +createdAt: DateTime
+  +editReview(newReview: String)
+  +editRating(newRating: Int)
+}
+
+class Favorite {
+  +id: String
+  +createdAt: DateTime
+  +remove()
+}
+
+class Collection {
+  +id: String
+  +name: String
+  +description: String
+  +isPublic: Boolean
+  +createdAt: DateTime
+  +updatedAt: DateTime
+  +addRecipe(recipe: Recipe)
+  +removeRecipe(recipe: Recipe)
+  +rename(newName: String)
+}
+
+class CollectionItem {
+  +id: String
+  +addedAt: DateTime
+  +removeFromCollection()
+}
+
+class NutritionInfo {
+  +id: String
+  +calories: Float
+  +protein: Float
+  +fat: Float
+  +carbs: Float
+  +fiber: Float
+  +sugar: Float
+  +sodium: Float
+  +updateInfo(calories: Float, protein: Float, fat: Float, ...)
+}
+
+class RecentView {
+  +id: String
+  +viewedAt: DateTime
+  +clearHistory()
+}
+
+' Relationships
+User "1" -- "*" Recipe : authors
+Recipe "1" -- "*" Ingredient : has
+Recipe "1" -- "*" Rating : has
+User "1" -- "*" Rating : rates
+Recipe "1" -- "*" Favorite : is_favorited
+User "1" -- "*" Favorite : favorites
+Recipe "1" -- "1" NutritionInfo : nutrition
+User "1" -- "*" Collection : owns
+Collection "1" -- "*" CollectionItem : contains
+Recipe "1" -- "*" CollectionItem : in
+User "1" -- "*" RecentView : views
+Recipe "1" -- "*" RecentView : viewed
+@enduml

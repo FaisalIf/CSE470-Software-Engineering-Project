@@ -92,13 +92,13 @@ export default function RecipeListView({
       <div className="mb-8">
         <form onSubmit={handleSearch} className="mb-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
             <input
               type="text"
               placeholder="Search recipes, ingredients, cuisines..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-800 placeholder-gray-600"
             />
           </div>
         </form>
@@ -108,7 +108,7 @@ export default function RecipeListView({
           <select
             value={filters.category}
             onChange={(e) => handleFilterChange("category", e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 text-gray-800"
           >
             <option value="">All Categories</option>
             <option value="Breakfast">Breakfast</option>
@@ -121,7 +121,7 @@ export default function RecipeListView({
           <select
             value={filters.cuisine}
             onChange={(e) => handleFilterChange("cuisine", e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 text-gray-800"
           >
             <option value="">All Cuisines</option>
             <option value="Italian">Italian</option>
@@ -134,7 +134,7 @@ export default function RecipeListView({
           <select
             value={filters.difficulty}
             onChange={(e) => handleFilterChange("difficulty", e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 text-gray-800"
           >
             <option value="">All Difficulties</option>
             <option value="Easy">Easy</option>
@@ -147,7 +147,7 @@ export default function RecipeListView({
             onChange={(e) =>
               handleFilterChange("sortBy", e.target.value as any)
             }
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 text-gray-800"
           >
             <option value="recent">Most Recent</option>
             <option value="popular">Most Popular</option>

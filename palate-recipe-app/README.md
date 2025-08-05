@@ -2,9 +2,10 @@
 
 Palate is a comprehensive cooking recipe platform where users can discover, share, and manage their favorite dishes. Built with Next.js 14, TypeScript, Tailwind CSS, and PostgreSQL following the **MVC (Model-View-Controller)** architectural pattern.
 
-## 🍳 Features
+## Features
 
 ### Core Features
+
 1. **Recipe Search** - Search recipes by keywords, ingredients, cuisine, or difficulty
 2. **Trending Recipes** - Discover popular and trending recipes on homepage
 3. **User-Submitted Recipes** - Allow users to submit recipes with ingredients, instructions, and prep time
@@ -16,7 +17,7 @@ Palate is a comprehensive cooking recipe platform where users can discover, shar
 9. **Automated Recipe Scaling** - Adjust ingredient quantities based on servings needed
 10. **Recently Viewed Recipes** - Track and display recently viewed recipes
 
-## 🏗️ Architecture
+## Architecture
 
 This project follows the **MVC (Model-View-Controller)** pattern:
 
@@ -25,7 +26,7 @@ This project follows the **MVC (Model-View-Controller)** pattern:
 - **Controllers** (`src/controllers/`) - API request handlers and business logic coordination
 - **Services** (`src/services/`) - Reusable business logic and external integrations
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
 - **Backend**: Next.js API Routes, Prisma ORM
@@ -34,19 +35,23 @@ This project follows the **MVC (Model-View-Controller)** pattern:
 - **Icons**: Lucide React
 - **Styling**: Tailwind CSS
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+ installed
 - Supabase account (for PostgreSQL database)
 
 ### 1. Environment Setup
+
 Copy the environment template:
+
 ```bash
 cp .env.example .env.local
 ```
 
 Update `.env.local` with your Supabase database URL:
+
 ```env
 DATABASE_URL="your_supabase_connection_string"
 NEXTAUTH_URL="http://localhost:3000"
@@ -54,6 +59,7 @@ NEXTAUTH_SECRET="your-secret-key"
 ```
 
 ### 2. Database Setup
+
 ```bash
 # Generate Prisma client
 npx prisma generate
@@ -63,6 +69,7 @@ npx prisma migrate dev --name init
 ```
 
 ### 3. Run Development Server
+
 ```bash
 npm run dev
 ```

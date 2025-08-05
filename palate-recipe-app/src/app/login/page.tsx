@@ -36,14 +36,14 @@ export default function LoginPage() {
           <div className="text-red-500 text-sm text-center">{error}</div>
         )}
         <input
-          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-800 placeholder-gray-600"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
         />
         <input
-          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-800 placeholder-gray-600"
           placeholder="Password"
           type="text"
           value={password}
@@ -57,8 +57,11 @@ export default function LoginPage() {
           Login
         </button>
         <div className="text-center text-sm mt-2">
-          Don&apos;t have an account?{" "}
-          <a href="/register" className="text-orange-600 hover:underline">
+          <span className="text-gray-700">Don&apos;t have an account?</span>{" "}
+          <a
+            href="/register"
+            className="text-orange-700 hover:underline font-semibold"
+          >
             Register
           </a>
         </div>

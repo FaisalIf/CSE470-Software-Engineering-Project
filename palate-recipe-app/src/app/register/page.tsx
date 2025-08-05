@@ -35,14 +35,14 @@ export default function RegisterPage() {
           <div className="text-red-500 text-sm text-center">{error}</div>
         )}
         <input
-          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-800 placeholder-gray-600"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
         />
         <input
-          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-800 placeholder-gray-600"
           placeholder="Password"
           type="text"
           value={password}
@@ -56,8 +56,11 @@ export default function RegisterPage() {
           Register
         </button>
         <div className="text-center text-sm mt-2">
-          Already have an account?{" "}
-          <a href="/login" className="text-orange-600 hover:underline">
+          <span className="text-gray-700">Already have an account?</span>{" "}
+          <a
+            href="/login"
+            className="text-orange-700 hover:underline font-semibold"
+          >
             Login
           </a>
         </div>

@@ -176,7 +176,7 @@ export class RecipeModel {
       // Fallback to basic query without complex relations
       const recipes = await prisma.$queryRaw`
         SELECT id, title, description, "imageUrl", "prepTime", "cookTime", servings, difficulty, cuisine, category, "createdAt" 
-        FROM "Recipe" 
+        FROM "recipes" 
         ORDER BY "createdAt" DESC 
         LIMIT ${limit}
       `;
