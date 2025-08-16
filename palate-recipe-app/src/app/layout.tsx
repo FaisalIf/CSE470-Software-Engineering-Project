@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
-import { ChefHat, Home, Search, TrendingUp, User, LogOut } from "lucide-react";
+import {
+  ChefHat,
+  Home,
+  Search,
+  TrendingUp,
+  User,
+  LogOut,
+  BookMarked,
+  Layers,
+} from "lucide-react";
 import "./globals.css";
 import { cookies } from "next/headers";
 
@@ -67,6 +76,12 @@ export default async function RootLayout({
                   <TrendingUp className="w-4 h-4" />
                   <span>Trending</span>
                 </Link>
+                <Link
+                  href="/ingredients-builder"
+                  className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  <span>Recipe Builder</span>
+                </Link>
               </div>
 
               {/* User Actions */}
@@ -78,6 +93,27 @@ export default async function RootLayout({
                       className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors text-sm font-medium"
                     >
                       Create Recipe
+                    </Link>
+                    <Link
+                      href="/profile"
+                      className="flex items-center space-x-1 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium"
+                    >
+                      <User className="w-4 h-4" />
+                      <span>My Profile</span>
+                    </Link>
+                    <Link
+                      href="/bookmarks"
+                      className="hidden lg:flex items-center space-x-1 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium"
+                    >
+                      <BookMarked className="w-4 h-4" />
+                      <span>My Bookmarks</span>
+                    </Link>
+                    <Link
+                      href="/collections"
+                      className="hidden lg:flex items-center space-x-1 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium"
+                    >
+                      <Layers className="w-4 h-4" />
+                      <span>My Collections</span>
                     </Link>
                     <form action="/api/logout" method="POST">
                       <button

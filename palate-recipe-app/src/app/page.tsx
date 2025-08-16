@@ -1,6 +1,6 @@
+"use client";
 import Link from "next/link";
 import { Search, Star, Users } from "lucide-react";
-
 export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100 flex flex-col">
@@ -69,7 +69,10 @@ export default function Home() {
             Share your creations, get feedback, and connect with fellow foodies.
           </p>
         </div>
+        {/* ...removed interactive features, only original three cards remain... */}
       </section>
+
+      {/* Ingredient List Builder moved to header */}
 
       {/* Call to Action Section */}
       <section className="bg-orange-50 py-12 mt-auto">
@@ -94,9 +97,16 @@ export default function Home() {
             >
               Join the Community
             </Link>
+            <Link
+              href="/reviews"
+              className="border-2 border-orange-600 text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 hover:text-white transition-colors"
+            >
+              Submit a Review
+            </Link>
           </div>
         </div>
       </section>
     </main>
   );
+  // ...existing code...
 }

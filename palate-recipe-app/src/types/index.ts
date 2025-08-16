@@ -45,6 +45,10 @@ export interface Rating {
   recipeId: string;
 }
 
+export interface RatingWithUser extends Rating {
+  user: Pick<User, 'id' | 'username' | 'name' | 'image'>;
+}
+
 export interface Favorite {
   id: string;
   createdAt: Date;
@@ -93,7 +97,7 @@ export interface RecipeWithDetails extends Recipe {
   ingredients: Ingredient[];
   nutritionInfo?: NutritionInfo | null;
   author: Pick<User, 'id' | 'username' | 'name' | 'image'>;
-  ratings: Rating[];
+  ratings: RatingWithUser[];
   favorites?: Favorite[];
   _count: {
     favorites: number;

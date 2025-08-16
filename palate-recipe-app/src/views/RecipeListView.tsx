@@ -4,16 +4,16 @@ import { useState, useEffect } from "react";
 import { Search, Filter, TrendingUp } from "lucide-react";
 import type { RecipeWithDetails, SearchRecipesRequest } from "@/types";
 
+import Link from "next/link";
+
 interface RecipeListViewProps {
   initialRecipes?: RecipeWithDetails[];
   searchParams?: SearchRecipesRequest;
-  onRecipeSelect?: (recipe: RecipeWithDetails) => void;
 }
 
 export default function RecipeListView({
   initialRecipes = [],
   searchParams = {},
-  onRecipeSelect,
 }: RecipeListViewProps) {
   const [recipes, setRecipes] = useState<RecipeWithDetails[]>(initialRecipes);
   const [loading, setLoading] = useState(false);
@@ -169,10 +169,11 @@ export default function RecipeListView({
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
             {recipes.map((recipe) => (
-              <div
+              <Link
                 key={recipe.id}
-                onClick={() => onRecipeSelect?.(recipe)}
+                href={`/recipes/${recipe.id}`}
                 className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden"
+                prefetch={false}
               >
                 {/* Recipe Image */}
                 <div className="aspect-w-16 aspect-h-9 bg-gray-200">
@@ -273,7 +274,7 @@ export default function RecipeListView({
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 
