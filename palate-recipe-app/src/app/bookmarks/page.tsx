@@ -24,7 +24,7 @@ export default async function BookmarksPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold mb-6">My Bookmarks</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-900">My Bookmarks</h1>
       {favorites.length === 0 ? (
         <div className="text-gray-500">No bookmarks yet.</div>
       ) : (
@@ -33,7 +33,7 @@ export default async function BookmarksPage() {
             <Link
               key={f.id}
               href={`/recipes/${f.recipeId}`}
-              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden border"
+              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-200"
             >
               <div className="aspect-w-16 aspect-h-9 bg-gray-200">
                 {f.recipe.imageUrl ? (

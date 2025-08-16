@@ -32,9 +32,9 @@ export default async function ProfilePage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold mb-6">My Profile</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-900">My Profile</h1>
 
-      <div className="bg-white rounded-xl shadow p-6 border border-orange-100 mb-8">
+      <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 mb-8">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-gray-200 overflow-hidden">
             {user.image ? (
@@ -53,11 +53,11 @@ export default async function ProfilePage() {
             <div className="text-gray-600 text-sm">{user.email}</div>
           </div>
         </div>
-        {user.bio && <p className="mt-4 text-gray-700">{user.bio}</p>}
+        {user.bio && <p className="mt-4 text-gray-600">{user.bio}</p>}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl shadow p-6 border border-orange-100">
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-xl font-semibold">My Bookmarks</h2>
             <Link
@@ -84,7 +84,7 @@ export default async function ProfilePage() {
           </ul>
         </div>
 
-        <div className="bg-white rounded-xl shadow p-6 border border-orange-100">
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-xl font-semibold">My Collections</h2>
             <Link

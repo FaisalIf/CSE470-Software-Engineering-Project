@@ -78,22 +78,24 @@ export default function IngredientsBuilderPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Ingredient List Builder</h1>
+        <h1 className="text-3xl font-bold text-gray-900">
+          Ingredient List Builder
+        </h1>
         <Link href="/recipes" className="text-orange-600 hover:underline">
           Browse Recipes
         </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white rounded-xl shadow p-6 border border-orange-100">
-          <p className="mb-4 text-gray-700">
+        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+          <p className="mb-4 text-gray-600">
             Select recipes to build your shopping list:
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[420px] overflow-auto pr-2">
             {recipes.map((r) => (
               <label
                 key={r.id}
-                className="flex items-center gap-2 text-sm cursor-pointer px-3 py-2 rounded hover:bg-orange-50 border border-transparent hover:border-orange-200"
+                className="flex items-center gap-2 text-sm cursor-pointer px-3 py-2 rounded hover:bg-gray-50 border border-transparent hover:border-gray-200"
               >
                 <input
                   type="checkbox"
@@ -106,11 +108,11 @@ export default function IngredientsBuilderPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow p-6 border border-orange-100">
+        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
           <h2 className="text-xl font-semibold mb-2">Shopping List</h2>
-          <ul className="list-disc list-inside text-gray-800 min-h-[2rem] space-y-1">
+          <ul className="list-disc list-inside text-gray-700 min-h-[2rem] space-y-1">
             {mergedIngredients.length === 0 ? (
-              <li className="text-gray-400">
+              <li className="text-gray-500">
                 Select recipes to see your shopping list
               </li>
             ) : (

@@ -25,7 +25,7 @@ export default async function CollectionsPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">My Collections</h1>
+        <h1 className="text-3xl font-bold text-gray-900">My Collections</h1>
         <Link
           href="/collections/create"
           className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 text-sm font-medium"
@@ -41,7 +41,7 @@ export default async function CollectionsPage() {
             <Link
               key={c.id}
               href={`/collections/${c.id}`}
-              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden border"
+              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-200"
             >
               <div className="p-4">
                 <h3 className="font-semibold text-lg text-gray-900 mb-1">
@@ -58,7 +58,7 @@ export default async function CollectionsPage() {
                   {c.items.slice(0, 5).map((i) => (
                     <div
                       key={i.id}
-                      className="w-10 h-10 bg-gray-200 rounded overflow-hidden border"
+                      className="w-10 h-10 bg-gray-200 rounded overflow-hidden border border-gray-200"
                     >
                       {i.recipe.imageUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element

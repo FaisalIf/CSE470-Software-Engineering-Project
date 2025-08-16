@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Filter, TrendingUp } from "lucide-react";
+import { Search, Filter, TrendingUp, BookmarkPlus, Layers } from "lucide-react";
 import type { RecipeWithDetails, SearchRecipesRequest } from "@/types";
 
 import Link from "next/link";
@@ -30,6 +30,12 @@ export default function RecipeListView({
     total: 0,
     pages: 0,
   });
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [collections, setCollections] = useState<
+    { id: string; name: string }[]
+  >([]);
+  const [openFor, setOpenFor] = useState<string | null>(null);
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
 
   // Fetch recipes based on current search/filter state
   const fetchRecipes = async (page: number = 1) => {
@@ -78,6 +84,36 @@ export default function RecipeListView({
   useEffect(() => {
     fetchRecipes(1);
   }, [filters]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/collections", { method: "GET" });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data?.data)) {
+            setCollections(
+              data.data.map((c: any) => ({ id: c.id, name: c.name }))
+            );
+          }
+        }
+      } catch {}
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/users/me/favorites");
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data?.data)) {
+            setFavoriteIds(new Set<string>(data.data));
+          }
+        }
+      } catch {}
+    })();
+  }, []);
 
   // Calculate average rating
   const getAverageRating = (recipe: RecipeWithDetails) => {
@@ -271,6 +307,131 @@ export default function RecipeListView({
                       <span className="text-xs text-gray-500">
                         ({recipe._count.ratings})
                       </span>
+                    </div>
+                  </div>
+                  <div className="px-4 pb-4 flex items-center gap-2">
+                    <button
+                      onClick={async (e) => {
+                        e.preventDefault();
+                        setBusyId(recipe.id);
+                        try {
+                          const res = await fetch(
+                            `/api/recipes/${recipe.id}/favorite`,
+                            { method: "POST" }
+                          );
+                          if (res.ok) {
+                            const body = await res
+                              .json()
+                              .catch(() => ({} as any));
+                            if (body?.already) {
+                              await fetch(
+                                `/api/recipes/${recipe.id}/favorite`,
+                                { method: "DELETE" }
+                              );
+                              setFavoriteIds((prev) => {
+                                const next = new Set(prev);
+                                next.delete(recipe.id);
+                                return next;
+                              });
+                            } else {
+                              setFavoriteIds((prev) =>
+                                new Set(prev).add(recipe.id)
+                              );
+                            }
+                          } else {
+                            await fetch(`/api/recipes/${recipe.id}/favorite`, {
+                              method: "DELETE",
+                            });
+                            setFavoriteIds((prev) => {
+                              const next = new Set(prev);
+                              next.delete(recipe.id);
+                              return next;
+                            });
+                          }
+                        } finally {
+                          setBusyId(null);
+                        }
+                      }}
+                      className={`px-3 py-1 rounded text-xs font-medium flex items-center gap-1 ${
+                        favoriteIds.has(recipe.id)
+                          ? "bg-gray-100 text-gray-800 border border-gray-200 hover:bg-gray-200"
+                          : "bg-orange-500 text-white hover:bg-orange-600"
+                      }`}
+                      disabled={busyId === recipe.id}
+                    >
+                      {busyId === recipe.id ? (
+                        <span>...</span>
+                      ) : (
+                        <>
+                          <BookmarkPlus className="w-3.5 h-3.5" />
+                          <span>
+                            {favoriteIds.has(recipe.id)
+                              ? "Remove from Bookmarks"
+                              : "Add to Bookmarks"}
+                          </span>
+                        </>
+                      )}
+                    </button>
+                    <div className="relative">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setOpenFor((id) =>
+                            id === recipe.id ? null : recipe.id
+                          );
+                        }}
+                        className="px-3 py-1 rounded bg-white border border-gray-200 text-gray-700 text-xs font-medium hover:bg-gray-50 flex items-center gap-1"
+                      >
+                        <Layers className="w-3.5 h-3.5" />
+                        <span>Collection</span>
+                      </button>
+                      {openFor === recipe.id && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                          <div className="py-1 max-h-60 overflow-auto">
+                            {collections.length === 0 ? (
+                              <div className="px-3 py-2 text-xs text-gray-500">
+                                No collections
+                              </div>
+                            ) : (
+                              collections.map((c) => (
+                                <button
+                                  key={c.id}
+                                  onClick={async (e) => {
+                                    e.preventDefault();
+                                    setBusyId(recipe.id);
+                                    try {
+                                      await fetch(
+                                        `/api/collections/${c.id}/items`,
+                                        {
+                                          method: "POST",
+                                          headers: {
+                                            "Content-Type": "application/json",
+                                          },
+                                          body: JSON.stringify({
+                                            recipeId: recipe.id,
+                                          }),
+                                        }
+                                      );
+                                    } finally {
+                                      setBusyId(null);
+                                      setOpenFor(null);
+                                    }
+                                  }}
+                                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                >
+                                  {c.name}
+                                </button>
+                              ))
+                            )}
+                            <Link
+                              href="/collections/create"
+                              className="block px-3 py-2 text-xs text-orange-600 hover:underline"
+                            >
+                              + New collection
+                            </Link>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

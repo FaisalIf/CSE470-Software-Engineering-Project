@@ -72,7 +72,7 @@ export default function ReviewsPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Submit a Review</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Submit a Review</h1>
         <Link href="/recipes" className="text-orange-600 hover:underline">
           Browse Recipes
         </Link>
@@ -80,7 +80,7 @@ export default function ReviewsPage() {
 
       <form
         onSubmit={submitReview}
-        className="bg-white rounded-xl shadow p-6 border border-orange-100"
+        className="bg-white rounded-xl shadow-sm p-6 border border-gray-200"
       >
         <label className="block mb-4">
           <span className="block text-sm font-medium text-gray-700 mb-1">

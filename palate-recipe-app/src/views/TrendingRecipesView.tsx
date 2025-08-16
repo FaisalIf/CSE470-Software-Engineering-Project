@@ -1,7 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { TrendingUp, Clock, Users, Star } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  TrendingUp,
+  Clock,
+  Users,
+  Star,
+  BookmarkPlus,
+  Layers,
+} from "lucide-react";
 import type { RecipeWithDetails } from "@/types";
 
 interface TrendingRecipesViewProps {
@@ -11,7 +20,14 @@ interface TrendingRecipesViewProps {
 export default function TrendingRecipesView({
   onRecipeSelect,
 }: TrendingRecipesViewProps) {
+  const router = useRouter();
   const [recipes, setRecipes] = useState<RecipeWithDetails[]>([]);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [collections, setCollections] = useState<
+    { id: string; name: string }[]
+  >([]);
+  const [openFor, setOpenFor] = useState<string | null>(null);
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [timeframe, setTimeframe] = useState("7d");
 
@@ -36,6 +52,37 @@ export default function TrendingRecipesView({
   useEffect(() => {
     fetchTrendingRecipes();
   }, [timeframe]);
+
+  useEffect(() => {
+    // prefetch user's collections for add-to-collection action
+    (async () => {
+      try {
+        const res = await fetch("/api/collections", { method: "GET" });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data?.data)) {
+            setCollections(
+              data.data.map((c: any) => ({ id: c.id, name: c.name }))
+            );
+          }
+        }
+      } catch {}
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/users/me/favorites");
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data?.data)) {
+            setFavoriteIds(new Set<string>(data.data));
+          }
+        }
+      } catch {}
+    })();
+  }, []);
 
   const getAverageRating = (recipe: RecipeWithDetails) => {
     if (!recipe.ratings || recipe.ratings.length === 0) return 0;
@@ -116,8 +163,7 @@ export default function TrendingRecipesView({
             {recipes.map((recipe, index) => (
               <div
                 key={recipe.id}
-                onClick={() => onRecipeSelect?.(recipe)}
-                className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden group relative"
+                className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group relative"
               >
                 {/* Trending Badge */}
                 <div className="absolute top-3 left-3 z-10 flex items-center space-x-1 bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-medium">
@@ -131,7 +177,10 @@ export default function TrendingRecipesView({
                 </div>
 
                 {/* Recipe Image */}
-                <div className="aspect-w-16 aspect-h-9 bg-gray-200 relative overflow-hidden">
+                <Link
+                  href={`/recipes/${recipe.id}`}
+                  className="aspect-w-16 aspect-h-9 bg-gray-200 relative overflow-hidden block"
+                >
                   {recipe.imageUrl ? (
                     <img
                       src={recipe.imageUrl}
@@ -145,12 +194,12 @@ export default function TrendingRecipesView({
                       </span>
                     </div>
                   )}
-                </div>
+                </Link>
 
                 {/* Recipe Content */}
                 <div className="p-4">
                   <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-orange-600 transition-colors">
-                    {recipe.title}
+                    <Link href={`/recipes/${recipe.id}`}>{recipe.title}</Link>
                   </h3>
 
                   <p className="text-gray-600 text-sm mb-3 line-clamp-2">
@@ -209,10 +258,146 @@ export default function TrendingRecipesView({
                   </div>
 
                   {/* Trending Metrics */}
-                  <div className="mt-3 pt-3 border-t border-gray-100">
-                    <div className="flex items-center justify-between text-xs text-gray-500">
+                  <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+                    <div className="text-xs text-gray-500">
                       <span>{recipe._count?.favorites || 0} favorites</span>
-                      <span>{recipe._count?.ratings || 0} ratings</span>
+                      <span className="ml-3">
+                        {recipe._count?.ratings || 0} ratings
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setBusyId(recipe.id);
+                          try {
+                            // Try to create; if already exists, server returns {already:true}
+                            const res = await fetch(
+                              `/api/recipes/${recipe.id}/favorite`,
+                              { method: "POST" }
+                            );
+                            if (res.ok) {
+                              const body = await res
+                                .json()
+                                .catch(() => ({} as any));
+                              if (body?.already) {
+                                await fetch(
+                                  `/api/recipes/${recipe.id}/favorite`,
+                                  { method: "DELETE" }
+                                );
+                                setFavoriteIds((prev) => {
+                                  const next = new Set(prev);
+                                  next.delete(recipe.id);
+                                  return next;
+                                });
+                              } else {
+                                setFavoriteIds((prev) =>
+                                  new Set(prev).add(recipe.id)
+                                );
+                              }
+                            } else {
+                              // fallback to delete
+                              await fetch(
+                                `/api/recipes/${recipe.id}/favorite`,
+                                { method: "DELETE" }
+                              );
+                              setFavoriteIds((prev) => {
+                                const next = new Set(prev);
+                                next.delete(recipe.id);
+                                return next;
+                              });
+                            }
+                          } finally {
+                            setBusyId(null);
+                          }
+                        }}
+                        className={`px-3 py-1 rounded text-xs font-medium flex items-center gap-1 ${
+                          favoriteIds.has(recipe.id)
+                            ? "bg-gray-100 text-gray-800 border border-gray-200 hover:bg-gray-200"
+                            : "bg-orange-500 text-white hover:bg-orange-600"
+                        }`}
+                        disabled={busyId === recipe.id}
+                        title="Toggle bookmark"
+                      >
+                        {busyId === recipe.id ? (
+                          <span>...</span>
+                        ) : (
+                          <>
+                            <BookmarkPlus className="w-3.5 h-3.5" />
+                            <span>
+                              {favoriteIds.has(recipe.id)
+                                ? "Remove from Bookmarks"
+                                : "Add to Bookmarks"}
+                            </span>
+                          </>
+                        )}
+                      </button>
+                      <div className="relative">
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setOpenFor((id) =>
+                              id === recipe.id ? null : recipe.id
+                            );
+                          }}
+                          className="px-3 py-1 rounded bg-white border border-gray-200 text-gray-700 text-xs font-medium hover:bg-gray-50 flex items-center gap-1"
+                          title="Add to collection"
+                        >
+                          <Layers className="w-3.5 h-3.5" />
+                          <span>Collection</span>
+                        </button>
+                        {openFor === recipe.id && (
+                          <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                            <div className="py-1 max-h-60 overflow-auto">
+                              {collections.length === 0 ? (
+                                <div className="px-3 py-2 text-xs text-gray-500">
+                                  No collections
+                                </div>
+                              ) : (
+                                collections.map((c) => (
+                                  <button
+                                    key={c.id}
+                                    onClick={async (e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      setBusyId(recipe.id);
+                                      try {
+                                        await fetch(
+                                          `/api/collections/${c.id}/items`,
+                                          {
+                                            method: "POST",
+                                            headers: {
+                                              "Content-Type":
+                                                "application/json",
+                                            },
+                                            body: JSON.stringify({
+                                              recipeId: recipe.id,
+                                            }),
+                                          }
+                                        );
+                                      } finally {
+                                        setBusyId(null);
+                                        setOpenFor(null);
+                                      }
+                                    }}
+                                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                  >
+                                    {c.name}
+                                  </button>
+                                ))
+                              )}
+                              <Link
+                                href="/collections/create"
+                                className="block px-3 py-2 text-xs text-orange-600 hover:underline"
+                              >
+                                + New collection
+                              </Link>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
