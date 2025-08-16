@@ -12,6 +12,7 @@ import {
   Layers,
 } from "lucide-react";
 import type { RecipeWithDetails } from "@/types";
+import { triggerToast } from "@/components/Toaster";
 
 interface TrendingRecipesViewProps {
   onRecipeSelect?: (recipe: RecipeWithDetails) => void;
@@ -163,7 +164,7 @@ export default function TrendingRecipesView({
             {recipes.map((recipe, index) => (
               <div
                 key={recipe.id}
-                className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden group relative"
+                className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 group relative"
               >
                 {/* Trending Badge */}
                 <div className="absolute top-3 left-3 z-10 flex items-center space-x-1 bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-medium">
@@ -179,7 +180,7 @@ export default function TrendingRecipesView({
                 {/* Recipe Image */}
                 <Link
                   href={`/recipes/${recipe.id}`}
-                  className="aspect-w-16 aspect-h-9 bg-gray-200 relative overflow-hidden block"
+                  className="aspect-w-16 aspect-h-9 bg-gray-200 relative overflow-hidden block rounded-t-xl"
                 >
                   {recipe.imageUrl ? (
                     <img
@@ -258,14 +259,15 @@ export default function TrendingRecipesView({
                   </div>
 
                   {/* Trending Metrics */}
-                  <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+                  <div className="mt-3 pt-3 border-t border-gray-100">
                     <div className="text-xs text-gray-500">
                       <span>{recipe._count?.favorites || 0} favorites</span>
                       <span className="ml-3">
                         {recipe._count?.ratings || 0} ratings
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    {/* Actions below metrics */}
+                    <div className="mt-2 flex items-center gap-2">
                       <button
                         onClick={async (e) => {
                           e.preventDefault();
@@ -291,10 +293,14 @@ export default function TrendingRecipesView({
                                   next.delete(recipe.id);
                                   return next;
                                 });
+                                triggerToast({
+                                  title: "Removed from bookmarks",
+                                });
                               } else {
                                 setFavoriteIds((prev) =>
                                   new Set(prev).add(recipe.id)
                                 );
+                                triggerToast({ title: "Added to bookmarks" });
                               }
                             } else {
                               // fallback to delete
@@ -307,6 +313,7 @@ export default function TrendingRecipesView({
                                 next.delete(recipe.id);
                                 return next;
                               });
+                              triggerToast({ title: "Removed from bookmarks" });
                             }
                           } finally {
                             setBusyId(null);
@@ -326,9 +333,7 @@ export default function TrendingRecipesView({
                           <>
                             <BookmarkPlus className="w-3.5 h-3.5" />
                             <span>
-                              {favoriteIds.has(recipe.id)
-                                ? "Remove from Bookmarks"
-                                : "Add to Bookmarks"}
+                              {favoriteIds.has(recipe.id) ? "Remove" : "Add"}
                             </span>
                           </>
                         )}
@@ -349,7 +354,7 @@ export default function TrendingRecipesView({
                           <span>Collection</span>
                         </button>
                         {openFor === recipe.id && (
-                          <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                          <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-visible">
                             <div className="py-1 max-h-60 overflow-auto">
                               {collections.length === 0 ? (
                                 <div className="px-3 py-2 text-xs text-gray-500">
@@ -377,6 +382,10 @@ export default function TrendingRecipesView({
                                             }),
                                           }
                                         );
+                                        triggerToast({
+                                          title: "Added to collection",
+                                          description: c.name,
+                                        });
                                       } finally {
                                         setBusyId(null);
                                         setOpenFor(null);
@@ -388,12 +397,16 @@ export default function TrendingRecipesView({
                                   </button>
                                 ))
                               )}
-                              <Link
-                                href="/collections/create"
-                                className="block px-3 py-2 text-xs text-orange-600 hover:underline"
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  window.open("/collections/create", "_blank");
+                                }}
+                                className="w-full text-left px-3 py-2 text-xs text-orange-600 hover:underline"
                               >
                                 + New collection
-                              </Link>
+                              </button>
                             </div>
                           </div>
                         )}

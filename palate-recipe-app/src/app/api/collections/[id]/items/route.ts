@@ -44,3 +44,37 @@ export async function POST(
     return NextResponse.json({ error: "Failed to add item" }, { status: 500 });
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const userId = getUserIdFromCookie(req);
+    if (!userId)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const collectionId = params.id;
+    const { searchParams } = new URL(req.url);
+    const recipeId = searchParams.get("recipeId");
+    if (!recipeId)
+      return NextResponse.json({ error: "recipeId required" }, { status: 400 });
+
+    // Ensure ownership
+    const coll = await prisma.collection.findFirst({
+      where: { id: collectionId, userId },
+    });
+    if (!coll)
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+    await prisma.collectionItem.deleteMany({
+      where: { collectionId, recipeId },
+    });
+    return NextResponse.json({ success: true });
+  } catch (e) {
+    console.error("collections items DELETE error", e);
+    return NextResponse.json(
+      { error: "Failed to remove item" },
+      { status: 500 }
+    );
+  }
+}

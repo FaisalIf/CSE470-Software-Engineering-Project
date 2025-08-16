@@ -12,6 +12,7 @@ import {
   PanelLeft,
 } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
+import Toaster from "@/components/Toaster";
 
 export default function AppChrome({
   children,
@@ -24,12 +25,23 @@ export default function AppChrome({
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Toaster />
+      {/* Absolute top-left sidebar toggle */}
+      <button
+        type="button"
+        onClick={() => setCollapsed((c) => !c)}
+        className="fixed top-2 left-2 z-50 p-2 rounded-lg border border-gray-200 bg-white/95 hover:bg-white shadow-sm text-gray-700"
+        title="Toggle sidebar"
+        aria-label="Toggle sidebar"
+      >
+        <PanelLeft className="w-5 h-5" />
+      </button>
       {/* Navigation Bar */}
       <nav className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Left: Logo and primary links */}
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-3 md:gap-6">
               <Link href="/" className="flex items-center space-x-2">
                 <ChefHat className="w-8 h-8 text-orange-600" />
                 <span className="text-xl font-bold text-gray-900">Palate</span>
@@ -59,17 +71,8 @@ export default function AppChrome({
               </div>
             </div>
 
-            {/* Right: Sidebar toggle + user actions */}
+            {/* Right: user actions */}
             <div className="flex items-center space-x-3">
-              <button
-                type="button"
-                onClick={() => setCollapsed((c) => !c)}
-                className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 text-gray-700"
-                title="Toggle sidebar"
-                aria-label="Toggle sidebar"
-              >
-                <PanelLeft className="w-5 h-5" />
-              </button>
               {sessionPresent ? (
                 <>
                   <Link

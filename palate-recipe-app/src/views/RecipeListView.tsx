@@ -5,6 +5,7 @@ import { Search, Filter, TrendingUp, BookmarkPlus, Layers } from "lucide-react";
 import type { RecipeWithDetails, SearchRecipesRequest } from "@/types";
 
 import Link from "next/link";
+import { triggerToast } from "@/components/Toaster";
 
 interface RecipeListViewProps {
   initialRecipes?: RecipeWithDetails[];
@@ -205,14 +206,16 @@ export default function RecipeListView({
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
             {recipes.map((recipe) => (
-              <Link
+              <div
                 key={recipe.id}
-                href={`/recipes/${recipe.id}`}
-                className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden"
-                prefetch={false}
+                className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
               >
                 {/* Recipe Image */}
-                <div className="aspect-w-16 aspect-h-9 bg-gray-200">
+                <Link
+                  href={`/recipes/${recipe.id}`}
+                  prefetch={false}
+                  className="aspect-w-16 aspect-h-9 bg-gray-200 block rounded-t-xl overflow-hidden"
+                >
                   {recipe.imageUrl ? (
                     <img
                       src={recipe.imageUrl}
@@ -249,7 +252,7 @@ export default function RecipeListView({
                       {recipe.title.charAt(0)}
                     </span>
                   </div>
-                </div>
+                </Link>
 
                 {/* Recipe Content */}
                 <div className="p-4">
@@ -285,7 +288,9 @@ export default function RecipeListView({
                     <div className="flex items-center space-x-2">
                       <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
                       <span className="text-sm text-gray-600">
-                        {recipe.author.name || recipe.author.username}
+                        {recipe.author?.name ||
+                          recipe.author?.username ||
+                          "Author"}
                       </span>
                     </div>
 
@@ -309,7 +314,8 @@ export default function RecipeListView({
                       </span>
                     </div>
                   </div>
-                  <div className="px-4 pb-4 flex items-center gap-2">
+                  {/* Action Row - new line under stats */}
+                  <div className="mt-2 flex items-center gap-2">
                     <button
                       onClick={async (e) => {
                         e.preventDefault();
@@ -333,10 +339,12 @@ export default function RecipeListView({
                                 next.delete(recipe.id);
                                 return next;
                               });
+                              triggerToast({ title: "Removed from bookmarks" });
                             } else {
                               setFavoriteIds((prev) =>
                                 new Set(prev).add(recipe.id)
                               );
+                              triggerToast({ title: "Added to bookmarks" });
                             }
                           } else {
                             await fetch(`/api/recipes/${recipe.id}/favorite`, {
@@ -347,6 +355,7 @@ export default function RecipeListView({
                               next.delete(recipe.id);
                               return next;
                             });
+                            triggerToast({ title: "Removed from bookmarks" });
                           }
                         } finally {
                           setBusyId(null);
@@ -365,9 +374,7 @@ export default function RecipeListView({
                         <>
                           <BookmarkPlus className="w-3.5 h-3.5" />
                           <span>
-                            {favoriteIds.has(recipe.id)
-                              ? "Remove from Bookmarks"
-                              : "Add to Bookmarks"}
+                            {favoriteIds.has(recipe.id) ? "Remove" : "Add"}
                           </span>
                         </>
                       )}
@@ -386,7 +393,7 @@ export default function RecipeListView({
                         <span>Collection</span>
                       </button>
                       {openFor === recipe.id && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                        <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-visible">
                           <div className="py-1 max-h-60 overflow-auto">
                             {collections.length === 0 ? (
                               <div className="px-3 py-2 text-xs text-gray-500">
@@ -412,6 +419,10 @@ export default function RecipeListView({
                                           }),
                                         }
                                       );
+                                      triggerToast({
+                                        title: "Added to collection",
+                                        description: c.name,
+                                      });
                                     } finally {
                                       setBusyId(null);
                                       setOpenFor(null);
@@ -423,19 +434,23 @@ export default function RecipeListView({
                                 </button>
                               ))
                             )}
-                            <Link
-                              href="/collections/create"
-                              className="block px-3 py-2 text-xs text-orange-600 hover:underline"
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                // open create in new tab to avoid link-in-link hydration issue
+                                window.open("/collections/create", "_blank");
+                              }}
+                              className="w-full text-left px-3 py-2 text-xs text-orange-600 hover:underline"
                             >
                               + New collection
-                            </Link>
+                            </button>
                           </div>
                         </div>
                       )}
                     </div>
                   </div>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
 

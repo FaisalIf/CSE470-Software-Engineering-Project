@@ -119,7 +119,7 @@ export default function Sidebar({
                   href={`/recipes/${rv.recipeId}`}
                   className="flex items-center gap-2 p-2 rounded hover:bg-gray-50"
                 >
-                  <div className="w-10 h-10 bg-gray-200 rounded overflow-hidden">
+                  <div className="w-10 h-10 bg-gray-200 rounded overflow-hidden flex items-center justify-center text-xs font-medium text-gray-600">
                     {rv.recipe?.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -127,7 +127,9 @@ export default function Sidebar({
                         alt={rv.recipe.title}
                         className="w-full h-full object-cover"
                       />
-                    ) : null}
+                    ) : (
+                      <span>{rv.recipe?.title?.charAt(0) ?? "R"}</span>
+                    )}
                   </div>
                   <div className="text-sm text-gray-700 line-clamp-2">
                     {rv.recipe?.title}

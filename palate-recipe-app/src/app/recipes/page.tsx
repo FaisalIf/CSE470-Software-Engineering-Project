@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Plus, TrendingUp } from "lucide-react";
 import RecipeListView from "@/views/RecipeListView";
 import TrendingRecipesView from "@/views/TrendingRecipesView";
@@ -10,6 +11,8 @@ import type { RecipeWithDetails } from "@/types";
 type ViewMode = "browse" | "trending" | "create";
 
 export default function RecipesPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [currentView, setCurrentView] = useState<ViewMode>("browse");
   const [selectedRecipe, setSelectedRecipe] =
     useState<RecipeWithDetails | null>(null);
@@ -27,6 +30,19 @@ export default function RecipesPage() {
     // TODO: Show success message
   };
 
+  // Sync view state with URL query param
+  useEffect(() => {
+    const v = (searchParams.get("view") as ViewMode) || "browse";
+    if (v !== currentView) setCurrentView(v);
+  }, [searchParams, currentView]);
+
+  const setView = (v: ViewMode) => {
+    const sp = new URLSearchParams(Array.from(searchParams.entries()));
+    if (v === "browse") sp.delete("view");
+    else sp.set("view", v);
+    router.push(`/recipes${sp.size ? `?${sp}` : ""}`);
+  };
+
   const renderView = () => {
     switch (currentView) {
       case "trending":
@@ -40,7 +56,7 @@ export default function RecipesPage() {
         );
       case "browse":
       default:
-        return <RecipeListView onRecipeSelect={handleRecipeSelect} />;
+        return <RecipeListView />;
     }
   };
 
@@ -56,7 +72,7 @@ export default function RecipesPage() {
               {/* View Toggle */}
               <nav className="flex space-x-1">
                 <button
-                  onClick={() => setCurrentView("browse")}
+                  onClick={() => setView("browse")}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     currentView === "browse"
                       ? "bg-orange-100 text-orange-700"
@@ -66,7 +82,7 @@ export default function RecipesPage() {
                   Browse All
                 </button>
                 <button
-                  onClick={() => setCurrentView("trending")}
+                  onClick={() => setView("trending")}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-1 ${
                     currentView === "trending"
                       ? "bg-orange-100 text-orange-700"
@@ -81,7 +97,7 @@ export default function RecipesPage() {
 
             {/* Create Recipe Button */}
             <button
-              onClick={() => setCurrentView("create")}
+              onClick={() => setView("create")}
               className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 currentView === "create"
                   ? "bg-orange-600 text-white"

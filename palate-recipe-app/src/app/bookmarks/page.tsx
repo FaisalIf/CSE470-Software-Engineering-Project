@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { cookies } from "next/headers";
+import RemoveFavoriteButton from "@/components/RemoveFavoriteButton";
 
 export default async function BookmarksPage() {
   const cookieStore = await cookies();
@@ -33,8 +34,9 @@ export default async function BookmarksPage() {
             <Link
               key={f.id}
               href={`/recipes/${f.recipeId}`}
-              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-200"
+              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden border border-gray-200 relative"
             >
+              <RemoveFavoriteButton recipeId={f.recipeId} />
               <div className="aspect-w-16 aspect-h-9 bg-gray-200">
                 {f.recipe.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element

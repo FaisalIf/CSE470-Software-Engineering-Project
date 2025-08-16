@@ -3,10 +3,10 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const recipeId = params.id;
+    const { id: recipeId } = await context.params;
     const cookieHeader = req.headers.get("cookie") || "";
     const match = cookieHeader.match(/(?:^|;\s*)session=([^;]+)/);
     const userId = match ? decodeURIComponent(match[1]) : null;
