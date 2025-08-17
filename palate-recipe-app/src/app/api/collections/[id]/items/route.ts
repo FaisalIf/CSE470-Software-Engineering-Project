@@ -9,13 +9,13 @@ function getUserIdFromCookie(req: NextRequest) {
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  ctx: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = getUserIdFromCookie(req);
     if (!userId)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const collectionId = params.id;
+    const { id: collectionId } = await ctx.params;
     const body = await req.json();
     const recipeId = body?.recipeId as string;
     if (!recipeId)
@@ -47,13 +47,13 @@ export async function POST(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  ctx: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = getUserIdFromCookie(req);
     if (!userId)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const collectionId = params.id;
+    const { id: collectionId } = await ctx.params;
     const { searchParams } = new URL(req.url);
     const recipeId = searchParams.get("recipeId");
     if (!recipeId)

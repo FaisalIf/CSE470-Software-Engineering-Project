@@ -44,7 +44,7 @@ export default function RegisterPage() {
         <input
           className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-800 placeholder-gray-600"
           placeholder="Password"
-          type="text"
+          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required

@@ -1,6 +1,6 @@
-import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { cookies } from "next/headers";
+import { UserModel } from "@/models/User";
 
 export default async function CollectionsPage() {
   const cookieStore = await cookies();
@@ -16,11 +16,7 @@ export default async function CollectionsPage() {
     );
   }
 
-  const collections = await prisma.collection.findMany({
-    where: { userId: session.value! },
-    include: { items: { include: { recipe: true } } },
-    orderBy: { updatedAt: "desc" },
-  });
+  const collections = await UserModel.getCollections(session.value!);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

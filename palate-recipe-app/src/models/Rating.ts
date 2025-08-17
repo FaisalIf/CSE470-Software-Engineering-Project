@@ -1,27 +1,29 @@
-import { PrismaClient } from '@prisma/client';
-import type { Rating, RateRecipeRequest } from '@/types';
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
+import type { Rating, RateRecipeRequest } from "@/types";
 
 export class RatingModel {
   // Create or update a rating
-  static async upsertRating(userId: string, recipeId: string, data: RateRecipeRequest) {
+  static async upsertRating(
+    userId: string,
+    recipeId: string,
+    data: RateRecipeRequest
+  ) {
     return await prisma.rating.upsert({
       where: {
         userId_recipeId: {
           userId,
-          recipeId
-        }
+          recipeId,
+        },
       },
       update: {
         rating: data.rating,
-        review: data.review
+        review: data.review,
       },
       create: {
         userId,
         recipeId,
         rating: data.rating,
-        review: data.review
+        review: data.review,
       },
       include: {
         user: {
@@ -29,35 +31,39 @@ export class RatingModel {
             id: true,
             username: true,
             name: true,
-            image: true
-          }
-        }
-      }
+            image: true,
+          },
+        },
+      },
     });
   }
 
   // Get all ratings for a recipe
-  static async getRecipeRatings(recipeId: string, page: number = 1, limit: number = 10) {
+  static async getRecipeRatings(
+    recipeId: string,
+    page: number = 1,
+    limit: number = 10
+  ) {
     const skip = (page - 1) * limit;
-    
+
     const [ratings, total] = await Promise.all([
       prisma.rating.findMany({
         where: { recipeId },
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         include: {
           user: {
             select: {
               id: true,
               username: true,
               name: true,
-              image: true
-            }
-          }
-        }
+              image: true,
+            },
+          },
+        },
       }),
-      prisma.rating.count({ where: { recipeId } })
+      prisma.rating.count({ where: { recipeId } }),
     ]);
 
     return {
@@ -66,8 +72,8 @@ export class RatingModel {
         page,
         limit,
         total,
-        pages: Math.ceil(total / limit)
-      }
+        pages: Math.ceil(total / limit),
+      },
     };
   }
 
@@ -77,8 +83,8 @@ export class RatingModel {
       where: {
         userId_recipeId: {
           userId,
-          recipeId
-        }
+          recipeId,
+        },
       },
       include: {
         user: {
@@ -86,10 +92,10 @@ export class RatingModel {
             id: true,
             username: true,
             name: true,
-            image: true
-          }
-        }
-      }
+            image: true,
+          },
+        },
+      },
     });
   }
 
@@ -99,9 +105,9 @@ export class RatingModel {
       where: {
         userId_recipeId: {
           userId,
-          recipeId
-        }
-      }
+          recipeId,
+        },
+      },
     });
   }
 
@@ -110,29 +116,33 @@ export class RatingModel {
     const result = await prisma.rating.aggregate({
       where: { recipeId },
       _avg: {
-        rating: true
+        rating: true,
       },
       _count: {
-        rating: true
-      }
+        rating: true,
+      },
     });
 
     return {
       average: result._avg.rating || 0,
-      count: result._count.rating
+      count: result._count.rating,
     };
   }
 
   // Get ratings by user
-  static async getUserRatings(userId: string, page: number = 1, limit: number = 10) {
+  static async getUserRatings(
+    userId: string,
+    page: number = 1,
+    limit: number = 10
+  ) {
     const skip = (page - 1) * limit;
-    
+
     const [ratings, total] = await Promise.all([
       prisma.rating.findMany({
         where: { userId },
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         include: {
           recipe: {
             select: {
@@ -143,14 +153,14 @@ export class RatingModel {
                 select: {
                   id: true,
                   username: true,
-                  name: true
-                }
-              }
-            }
-          }
-        }
+                  name: true,
+                },
+              },
+            },
+          },
+        },
       }),
-      prisma.rating.count({ where: { userId } })
+      prisma.rating.count({ where: { userId } }),
     ]);
 
     return {
@@ -159,8 +169,8 @@ export class RatingModel {
         page,
         limit,
         total,
-        pages: Math.ceil(total / limit)
-      }
+        pages: Math.ceil(total / limit),
+      },
     };
   }
 }

@@ -9,13 +9,13 @@ function getUserIdFromCookie(req: NextRequest) {
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  ctx: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = getUserIdFromCookie(req);
     if (!userId)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const id = params.id;
+    const { id } = await ctx.params;
     const body = await req.json();
     const { name, description, isPublic } = body ?? {};
 

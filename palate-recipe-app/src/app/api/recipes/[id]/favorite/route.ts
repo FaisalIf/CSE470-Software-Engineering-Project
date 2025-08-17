@@ -9,13 +9,13 @@ function getUserIdFromCookie(req: NextRequest) {
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  ctx: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = getUserIdFromCookie(req);
     if (!userId)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const recipeId = params.id;
+    const { id: recipeId } = await ctx.params;
     const favorite = await prisma.favorite.create({
       data: { userId, recipeId },
     });
@@ -38,13 +38,13 @@ export async function POST(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  ctx: { params: Promise<{ id: string }> }
 ) {
   try {
     const userId = getUserIdFromCookie(req);
     if (!userId)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const recipeId = params.id;
+    const { id: recipeId } = await ctx.params;
     await prisma.favorite.deleteMany({ where: { userId, recipeId } });
     return NextResponse.json({ success: true });
   } catch (e) {

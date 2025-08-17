@@ -1,21 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { RatingModel } from "@/models/Rating";
 
 // GET /api/recipes/[id]/ratings - list ratings for a recipe
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  ctx: { params: Promise<{ id: string }> }
 ) {
   try {
-    const recipeId = params.id;
-    const ratings = await prisma.rating.findMany({
-      where: { recipeId },
-      include: {
-        user: { select: { id: true, username: true, name: true, image: true } },
-      },
-      orderBy: { createdAt: "desc" },
-    });
-    return NextResponse.json(ratings);
+    const { id: recipeId } = await ctx.params;
+    const result = await RatingModel.getRecipeRatings(recipeId, 1, 50);
+    return NextResponse.json(result);
   } catch (e) {
     console.error("GET ratings error", e);
     return NextResponse.json(
@@ -28,10 +22,10 @@ export async function GET(
 // POST /api/recipes/[id]/ratings - create rating/review for a recipe
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  ctx: { params: Promise<{ id: string }> }
 ) {
   try {
-    const recipeId = params.id;
+    const { id: recipeId } = await ctx.params;
     // Get userId from insecure session cookie (set by /api/login)
     const cookieHeader = req.headers.get("cookie") || "";
     const match = cookieHeader.match(/(?:^|;\s*)session=([^;]+)/);
@@ -49,17 +43,9 @@ export async function POST(
         { status: 400 }
       );
     }
-
-    const created = await prisma.rating.create({
-      data: {
-        rating,
-        review,
-        userId,
-        recipeId,
-      },
-      include: {
-        user: { select: { id: true, username: true, name: true, image: true } },
-      },
+    const created = await RatingModel.upsertRating(userId, recipeId, {
+      rating,
+      review,
     });
     return NextResponse.json(created, { status: 201 });
   } catch (e) {

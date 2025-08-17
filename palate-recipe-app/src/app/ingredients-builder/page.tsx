@@ -4,70 +4,56 @@ import { useState, useEffect } from "react";
 import { Check } from "lucide-react";
 import Link from "next/link";
 
-type Ingredient = { name: string; amount: number; unit: string };
-type Recipe = { id: string; title: string; ingredients: Ingredient[] };
-// This would be fetched from your API in a real app
-const sampleRecipes: Recipe[] = [
-  {
-    id: "carbonara",
-    title: "Spaghetti Carbonara",
-    ingredients: [
-      { name: "Eggs", amount: 2, unit: "x" },
-      { name: "Spaghetti", amount: 400, unit: "g" },
-      { name: "Pancetta", amount: 100, unit: "g" },
-    ],
-  },
-  {
-    id: "pancakes",
-    title: "Blueberry Pancakes",
-    ingredients: [
-      { name: "Eggs", amount: 1, unit: "x" },
-      { name: "Milk", amount: 1, unit: "cup" },
-      { name: "Flour", amount: 1, unit: "cup" },
-    ],
-  },
-  {
-    id: "avocado-toast",
-    title: "Avocado Toast",
-    ingredients: [
-      { name: "Avocado", amount: 1, unit: "x" },
-      { name: "Bread", amount: 2, unit: "slices" },
-      { name: "Eggs", amount: 1, unit: "x" },
-    ],
-  },
-];
-
-function mergeIngredients(selected: Recipe[]): Ingredient[] {
-  const map = new Map<string, Ingredient>();
-  selected.forEach((r) => {
-    r.ingredients.forEach((ing) => {
-      const key = ing.name + ing.unit;
-      if (!map.has(key)) {
-        map.set(key, { ...ing });
-      } else {
-        map.get(key)!.amount += ing.amount;
-      }
-    });
-  });
-  return Array.from(map.values());
-}
+type RecipeLite = { id: string; title: string };
+type ShoppingListItem = {
+  ingredient: string;
+  amount: number;
+  unit: string;
+  recipes: string[];
+};
+type ShoppingList = {
+  items: ShoppingListItem[];
+  recipeCount: number;
+  totalItems: number;
+};
 
 export default function IngredientsBuilderPage() {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [recipes, setRecipes] = useState<RecipeLite[]>([]);
   const [selectedRecipeIds, setSelectedRecipeIds] = useState<string[]>([]);
-  const selectedRecipes = recipes.filter((r) =>
-    selectedRecipeIds.includes(r.id)
-  );
-  const mergedIngredients = mergeIngredients(selectedRecipes);
+  const [list, setList] = useState<ShoppingList>({
+    items: [],
+    recipeCount: 0,
+    totalItems: 0,
+  });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function fetchRecipes() {
       const res = await fetch("/api/recipes?withIngredients=1");
       const data = await res.json();
-      if (data.success) setRecipes(data.data);
+      if (data.success)
+        setRecipes(data.data.map((r: any) => ({ id: r.id, title: r.title })));
     }
     fetchRecipes();
   }, []);
+
+  useEffect(() => {
+    async function buildList() {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/shopping-list", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ recipeIds: selectedRecipeIds }),
+        });
+        const data = await res.json();
+        if (data.success) setList(data.data);
+      } finally {
+        setLoading(false);
+      }
+    }
+    buildList();
+  }, [selectedRecipeIds]);
 
   function handleRecipeSelect(id: string) {
     setSelectedRecipeIds((prev) =>
@@ -111,16 +97,18 @@ export default function IngredientsBuilderPage() {
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
           <h2 className="text-xl font-semibold mb-2">Shopping List</h2>
           <ul className="list-disc list-inside text-gray-700 min-h-[2rem] space-y-1">
-            {mergedIngredients.length === 0 ? (
+            {loading ? (
+              <li className="text-gray-500">Building list…</li>
+            ) : list.items.length === 0 ? (
               <li className="text-gray-500">
                 Select recipes to see your shopping list
               </li>
             ) : (
-              mergedIngredients.map((ing, i) => (
+              list.items.map((ing, i) => (
                 <li key={i} className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-green-500" />
-                  {ing.amount}
-                  {ing.unit !== "x" ? ` ${ing.unit}` : "x"} {ing.name}
+                  {Math.round(ing.amount * 100) / 100}
+                  {ing.unit !== "x" ? ` ${ing.unit}` : "x"} {ing.ingredient}
                 </li>
               ))
             )}

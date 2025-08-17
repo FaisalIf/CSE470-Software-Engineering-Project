@@ -1,7 +1,7 @@
-import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
 import { cookies } from "next/headers";
+import { UserModel } from "@/models/User";
 
 export default async function ProfilePage() {
   // Insecure cookie-based auth
@@ -18,13 +18,13 @@ export default async function ProfilePage() {
     );
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: session.value! },
-    include: {
-      favorites: { include: { recipe: true } },
-      collections: { include: { items: { include: { recipe: true } } } },
-    },
-  });
+  const user = await UserModel.findById(session.value!);
+  const { recipes: favoriteRecipes } = await UserModel.getFavorites(
+    session.value!,
+    1,
+    5
+  );
+  const collections = await UserModel.getCollections(session.value!);
 
   if (!user) {
     return <div className="max-w-3xl mx-auto px-4 py-8">User not found.</div>;
@@ -68,17 +68,17 @@ export default async function ProfilePage() {
             </Link>
           </div>
           <ul className="space-y-2">
-            {user.favorites.slice(0, 5).map((f) => (
-              <li key={f.id}>
+            {favoriteRecipes.slice(0, 5).map((r) => (
+              <li key={r.id}>
                 <Link
-                  href={`/recipes/${f.recipeId}`}
+                  href={`/recipes/${r.id}`}
                   className="text-gray-800 hover:underline"
                 >
-                  {f.recipe.title}
+                  {r.title}
                 </Link>
               </li>
             ))}
-            {user.favorites.length === 0 && (
+            {favoriteRecipes.length === 0 && (
               <li className="text-gray-500 text-sm">No bookmarks yet.</li>
             )}
           </ul>
@@ -95,17 +95,17 @@ export default async function ProfilePage() {
             </Link>
           </div>
           <ul className="space-y-2">
-            {user.collections.slice(0, 5).map((c) => (
+            {collections.slice(0, 5).map((c) => (
               <li key={c.id}>
                 <Link
                   href={`/collections/${c.id}`}
                   className="text-gray-800 hover:underline"
                 >
-                  {c.name} ({c.items.length} items)
+                  {c.name} ({c._count?.items ?? c.items.length} items)
                 </Link>
               </li>
             ))}
-            {user.collections.length === 0 && (
+            {collections.length === 0 && (
               <li className="text-gray-500 text-sm">No collections yet.</li>
             )}
           </ul>

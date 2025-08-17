@@ -183,6 +183,51 @@ export class UserModel {
     });
   }
 
+  // Get a single collection by id for a given user (with items and basic recipe data)
+  static async getCollectionById(
+    userId: string,
+    collectionId: string
+  ): Promise<{
+    id: string;
+    name: string;
+    description: string | null;
+    isPublic: boolean;
+    items: Array<{
+      id: string;
+      recipeId: string;
+      recipe: {
+        id: string;
+        title: string;
+        description: string | null;
+        imageUrl: string | null;
+      };
+    }>;
+  } | null> {
+    return await prisma.collection.findFirst({
+      where: { id: collectionId, userId },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        isPublic: true,
+        items: {
+          select: {
+            id: true,
+            recipeId: true,
+            recipe: {
+              select: {
+                id: true,
+                title: true,
+                description: true,
+                imageUrl: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   // Get recently viewed recipes
   static async getRecentlyViewed(userId: string, limit: number = 10) {
     const recentViews = await prisma.recentView.findMany({
