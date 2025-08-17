@@ -8,14 +8,17 @@ Palate is a comprehensive cooking recipe platform where users can discover, shar
 
 1. **Recipe Search** - Search recipes by keywords, ingredients, cuisine, or difficulty
 2. **Trending Recipes** - Discover popular and trending recipes on homepage
-3. **User-Submitted Recipes** - Allow users to submit recipes with ingredients, instructions, and prep time
-4. **Recipe Rating & Reviews** - Users can rate recipes (1-5 stars) and leave reviews
-5. **Ingredient List Builder** - Generate consolidated shopping lists from multiple recipes
-6. **Nutritional Information** - Display estimated nutritional information for each recipe
-7. **User Favorites/Bookmarks** - Save favorite recipes to personal collections
-8. **User Recipe Collections** - Create themed collections (e.g., "Weeknight Dinners")
-9. **Automated Recipe Scaling** - Adjust ingredient quantities based on servings needed
-10. **Recently Viewed Recipes** - Track and display recently viewed recipes
+3. **Browse Users** - Discover other users and view their public profiles and collections
+4. **User-Submitted Recipes** - Allow users to submit recipes with ingredients, instructions, and prep time
+5. **Edit User Profile** - Update your name, username, bio, and photo
+6. **Recipe Rating & Reviews** - Users can rate recipes (1-5 stars) and leave reviews
+7. **My Recipes** - See your own recipes, with options to edit (including nutrition) or delete
+8. **Ingredient List Builder** - Generate consolidated shopping lists from multiple recipes
+9. **Nutritional Information** - Display estimated nutritional information for each recipe
+10. **User Favorites/Bookmarks** - Save favorite recipes to personal collections
+11. **User Recipe Collections** - Create themed collections (e.g., "Weeknight Dinners")
+12. **Automated Recipe Scaling** - Adjust ingredient quantities based on servings; choose 1x, 2x, 3x, or 4x of the base servings
+13. **Recently Viewed Recipes** - Track and display recently viewed recipes
 
 ## Architecture
 

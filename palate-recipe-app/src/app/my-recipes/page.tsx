@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { RecipeModel } from "@/models/Recipe";
+import DeleteRecipeButton from "@/components/DeleteRecipeButton";
 
 export default async function MyRecipesPage() {
   const cookieStore = await cookies();
@@ -35,16 +36,22 @@ export default async function MyRecipesPage() {
             <div className="mt-3 flex gap-2">
               <Link
                 href={`/recipes/${r.id}`}
-                className="px-3 py-1 text-sm rounded bg-gray-100"
+                className="px-4 py-2 text-sm rounded bg-gray-100 hover:bg-gray-200"
               >
                 View
               </Link>
               <Link
                 href={`/my-recipes/${r.id}/edit`}
-                className="px-3 py-1 text-sm rounded bg-orange-500 text-white"
+                className="px-4 py-2 text-sm rounded bg-orange-500 text-white hover:bg-orange-600"
               >
                 Edit
               </Link>
+              <DeleteRecipeButton
+                recipeId={r.id}
+                userId={userId}
+                variant="large"
+                onDeleted={undefined}
+              />
             </div>
           </div>
         ))}

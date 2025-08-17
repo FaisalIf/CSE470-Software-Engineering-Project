@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { UserModel } from "@/models/User";
+import { cookies } from "next/headers";
 
 export default async function UsersPage() {
+  const cookieStore = await cookies();
+  const me = cookieStore.get("session")?.value;
   const { users } = await UserModel.listPublic(30);
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -10,7 +13,7 @@ export default async function UsersPage() {
         {users.map((u: any) => (
           <Link
             key={u.id}
-            href={`/users/${u.id}`}
+            href={me && u.id === me ? "/profile" : `/users/${u.id}`}
             className="border rounded-lg p-4 bg-white hover:shadow-sm"
           >
             <div className="flex items-center gap-3">

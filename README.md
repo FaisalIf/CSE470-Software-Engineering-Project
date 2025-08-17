@@ -20,6 +20,9 @@ Palate is a modern web application designed to transform the way people interact
 - User Recipe Collections: Users can create and manage their own themed collections of recipes (e.g., "Weeknight Dinners", "Desserts for Parties").
 - Automated Recipe Scaling: Users can adjust the number of servings for a recipe, and ingredient quantities are automatically recalculated.
 - Recently Viewed Recipes: Users can see a list of recipes they have recently viewed for easy reference and quick access.
+- Browse Users: Users can explore other users’ public profiles and discover their public recipe collections.
+- Edit User Profile: Users can edit their profile information, including name, username, bio, and profile photo.
+- My Recipes (Edit/Delete): Users can view a list of their own recipes and edit details (including optional nutrition info) or delete recipes they own.
 
 ## Non-Functional Requirements
 
