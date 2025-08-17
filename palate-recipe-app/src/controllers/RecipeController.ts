@@ -7,6 +7,11 @@ import {
 import type { SearchRecipesRequest } from "@/types";
 
 export class RecipeController {
+  private static getUserIdFromCookie(request: NextRequest) {
+    const cookieHeader = request.headers.get("cookie") || "";
+    const match = cookieHeader.match(/(?:^|;\s*)session=([^;]+)/);
+    return match ? decodeURIComponent(match[1]) : null;
+  }
   // GET /api/recipes - Get all recipes with search and pagination
   static async getRecipes(request: NextRequest) {
     try {
@@ -46,7 +51,7 @@ export class RecipeController {
     { params }: { params: { id: string } }
   ) {
     try {
-      const userId = request.headers.get("x-user-id"); // From auth middleware
+      const userId = RecipeController.getUserIdFromCookie(request) || undefined;
       const recipe = await RecipeModel.findById(params.id, userId || undefined);
 
       if (!recipe) {
@@ -116,7 +121,7 @@ export class RecipeController {
     { params }: { params: { id: string } }
   ) {
     try {
-      const userId = request.headers.get("x-user-id");
+      const userId = RecipeController.getUserIdFromCookie(request);
       if (!userId) {
         return NextResponse.json(
           { success: false, error: "Authentication required" },
@@ -128,16 +133,27 @@ export class RecipeController {
       const updateData: UpdateRecipeData = { ...body, id: params.id };
 
       // Ensure the updater owns the recipe
-      const recipe = await RecipeModel.updateByAuthor(
-        params.id,
-        userId,
-        updateData
-      );
+      try {
+        const recipe = await RecipeModel.updateByAuthor(
+          params.id,
+          userId,
+          updateData
+        );
 
-      return NextResponse.json({
-        success: true,
-        data: recipe,
-      });
+        return NextResponse.json({
+          success: true,
+          data: recipe,
+        });
+      } catch (e: any) {
+        // Prisma throws when no record matches (not owner or missing)
+        if (e?.code === "P2025") {
+          return NextResponse.json(
+            { success: false, error: "Forbidden" },
+            { status: 403 }
+          );
+        }
+        throw e;
+      }
     } catch (error) {
       console.error("Error updating recipe:", error);
       return NextResponse.json(
@@ -153,20 +169,28 @@ export class RecipeController {
     { params }: { params: { id: string } }
   ) {
     try {
-      const userId = request.headers.get("x-user-id");
+      const userId = RecipeController.getUserIdFromCookie(request);
       if (!userId) {
         return NextResponse.json(
           { success: false, error: "Authentication required" },
           { status: 401 }
         );
       }
-
-      await RecipeModel.delete(params.id, userId);
-
-      return NextResponse.json({
-        success: true,
-        message: "Recipe deleted successfully",
-      });
+      try {
+        await RecipeModel.delete(params.id, userId);
+        return NextResponse.json({
+          success: true,
+          message: "Recipe deleted successfully",
+        });
+      } catch (e: any) {
+        if (e?.code === "P2025") {
+          return NextResponse.json(
+            { success: false, error: "Forbidden" },
+            { status: 403 }
+          );
+        }
+        throw e;
+      }
     } catch (error) {
       console.error("Error deleting recipe:", error);
       return NextResponse.json(

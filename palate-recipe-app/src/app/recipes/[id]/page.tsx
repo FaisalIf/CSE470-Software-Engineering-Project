@@ -16,6 +16,7 @@ export default function RecipeDetailPage() {
   const [servings, setServings] = useState<number | null>(null);
   const [baseServings, setBaseServings] = useState<number | null>(null);
   const [scaling, setScaling] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   // recent views tracking disabled for now
 
   useEffect(() => {
@@ -43,6 +44,23 @@ export default function RecipeDetailPage() {
     }
   }, [recipeId]);
 
+  // Fetch current logged-in user id to gate owner-only actions
+  useEffect(() => {
+    let ignore = false;
+    async function fetchMe() {
+      try {
+        const res = await fetch(`/api/users/me`, { cache: "no-store" });
+        if (!res.ok) return;
+        const json = await res.json();
+        if (!ignore && json?.data?.id) setCurrentUserId(json.data.id);
+      } catch {}
+    }
+    fetchMe();
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
   // Reviews are view-only on this page; submissions happen on /reviews
 
   if (loading)
@@ -58,7 +76,7 @@ export default function RecipeDetailPage() {
       </div>
     );
 
-  const canEdit = recipe.author?.id; // Presence used; actual auth checked in API
+  const canEdit = !!(currentUserId && recipe.author?.id === currentUserId);
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Scaling Controls */}
@@ -120,20 +138,21 @@ export default function RecipeDetailPage() {
         <h1 className="text-3xl font-bold mb-2 text-gray-900">
           {recipe.title}
         </h1>
-        <div className="flex items-center gap-2">
-          <Link
-            href={`/my-recipes/${recipe.id}/edit`}
-            className="px-4 py-2 text-sm rounded bg-orange-500 text-white hover:bg-orange-600"
-          >
-            Edit
-          </Link>
-          <DeleteRecipeButton
-            recipeId={recipe.id}
-            userId={recipe.author?.id}
-            variant="large"
-            onDeleted={() => router.push("/my-recipes")}
-          />
-        </div>
+        {canEdit && (
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/my-recipes/${recipe.id}/edit`}
+              className="px-4 py-2 text-sm rounded bg-orange-500 text-white hover:bg-orange-600"
+            >
+              Edit
+            </Link>
+            <DeleteRecipeButton
+              recipeId={recipe.id}
+              variant="large"
+              onDeleted={() => router.push("/my-recipes")}
+            />
+          </div>
+        )}
       </div>
       {recipe.imageUrl ? (
         <img

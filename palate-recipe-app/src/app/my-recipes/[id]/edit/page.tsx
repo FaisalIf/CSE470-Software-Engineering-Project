@@ -45,7 +45,6 @@ export default function EditRecipePage({
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "x-user-id": data?.author?.id ?? "",
         },
         body: JSON.stringify({
           title: data.title,

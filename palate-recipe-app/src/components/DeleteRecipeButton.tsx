@@ -6,12 +6,10 @@ import { triggerToast } from "@/components/Toaster";
 
 export default function DeleteRecipeButton({
   recipeId,
-  userId,
   variant = "small",
   onDeleted,
 }: {
   recipeId: string;
-  userId?: string;
   variant?: "small" | "large";
   onDeleted?: () => void;
 }) {
@@ -26,11 +24,9 @@ export default function DeleteRecipeButton({
   async function handleDelete() {
     setDeleting(true);
     try {
-      const headers: Record<string, string> = {};
-      if (userId) headers["x-user-id"] = userId;
       const res = await fetch(`/api/recipes/${recipeId}`, {
         method: "DELETE",
-        headers,
+        headers: {},
       });
       const json = await res.json();
       if (json.success) {

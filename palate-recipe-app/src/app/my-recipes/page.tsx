@@ -48,7 +48,6 @@ export default async function MyRecipesPage() {
               </Link>
               <DeleteRecipeButton
                 recipeId={r.id}
-                userId={userId}
                 variant="large"
                 onDeleted={undefined}
               />
