@@ -125,12 +125,14 @@ export class RecipeController {
       }
 
       const body = await request.json();
-      const updateData: UpdateRecipeData = {
-        ...body,
-        id: params.id,
-      };
+      const updateData: UpdateRecipeData = { ...body, id: params.id };
 
-      const recipe = await RecipeModel.update(updateData);
+      // Ensure the updater owns the recipe
+      const recipe = await RecipeModel.updateByAuthor(
+        params.id,
+        userId,
+        updateData
+      );
 
       return NextResponse.json({
         success: true,

@@ -42,6 +42,57 @@ export class UserModel {
     });
   }
 
+  // List users (basic public info)
+  static async listPublic(limit: number = 20, cursor?: string) {
+    const users = await prisma.user.findMany({
+      take: limit,
+      skip: cursor ? 1 : 0,
+      ...(cursor ? { cursor: { id: cursor } } : {}),
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        username: true,
+        name: true,
+        image: true,
+        bio: true,
+        _count: { select: { collections: true, recipes: true } },
+      },
+    });
+    const nextCursor =
+      users.length === limit ? users[users.length - 1].id : undefined;
+    return { users, nextCursor };
+  }
+
+  // Public profile with only public collections
+  static async getPublicProfile(userId: string) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        username: true,
+        name: true,
+        image: true,
+        bio: true,
+        _count: { select: { recipes: true, collections: true } },
+      },
+    });
+    if (!user) return null;
+
+    const collections = await prisma.collection.findMany({
+      where: { userId, isPublic: true },
+      orderBy: { createdAt: "desc" },
+      include: {
+        items: {
+          include: {
+            recipe: { select: { id: true, title: true, imageUrl: true } },
+          },
+        },
+        _count: { select: { items: true } },
+      },
+    });
+    return { user, collections };
+  }
+
   // Find user by email
   static async findByEmail(email: string) {
     return await prisma.user.findUnique({

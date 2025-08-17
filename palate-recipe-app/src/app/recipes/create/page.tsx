@@ -2,13 +2,18 @@
 
 import { useRouter } from "next/navigation";
 import RecipeFormView from "@/views/RecipeFormView";
+import { triggerToast } from "@/components/Toaster";
 
 export default function CreateRecipePage() {
   const router = useRouter();
 
   const handleRecipeSubmitted = (recipe: any) => {
-    alert("Recipe created successfully!");
-    router.push(`/recipes`);
+    triggerToast({
+      title: "Recipe created",
+      description: "Your recipe has been created.",
+    });
+    // Give toast a moment to appear before navigation
+    setTimeout(() => router.push(`/recipes`), 600);
   };
 
   const handleCancel = () => {

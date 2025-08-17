@@ -7,6 +7,7 @@ import {
   TrendingUp,
   ListChecks,
   User,
+  Users,
   BookMarked,
   Layers,
   Clock,
@@ -80,6 +81,20 @@ export default function Sidebar({
             icon={<User className="w-4 h-4" />}
           >
             My Profile
+          </SidebarLink>
+          <SidebarLink
+            collapsed={collapsed}
+            href="/my-recipes"
+            icon={<Layers className="w-4 h-4" />}
+          >
+            My Recipes
+          </SidebarLink>
+          <SidebarLink
+            collapsed={collapsed}
+            href="/users"
+            icon={<Users className="w-4 h-4" />}
+          >
+            Browse Users
           </SidebarLink>
           <SidebarLink
             collapsed={collapsed}

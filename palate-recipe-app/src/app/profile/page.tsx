@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { UserModel } from "@/models/User";
+import ProfileEditForm from "@/components/ProfileEditForm";
 
 export default async function ProfilePage() {
   // Insecure cookie-based auth
@@ -54,6 +54,16 @@ export default async function ProfilePage() {
           </div>
         </div>
         {user.bio && <p className="mt-4 text-gray-600">{user.bio}</p>}
+        {/* Edit form */}
+        <ProfileEditForm user={user as any} />
+        <div className="mt-4">
+          <Link
+            href="/my-recipes"
+            className="text-orange-600 hover:underline text-sm"
+          >
+            Manage My Recipes
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

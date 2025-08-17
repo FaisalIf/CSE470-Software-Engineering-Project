@@ -28,9 +28,9 @@ export default function Toaster() {
   }, []);
 
   return (
-    <Toast.Provider swipeDirection="right">
+    <Toast.Provider swipeDirection="right" duration={5000}>
       <Toast.Root
-        className="fixed bottom-4 right-4 z-[100] bg-gray-900 text-white rounded-lg shadow-lg p-4 w-80 data-[state=open]:animate-in data-[state=closed]:animate-out"
+        className="fixed bottom-4 right-4 z-[1000] bg-gray-900 text-white rounded-lg shadow-lg p-4 w-80 data-[state=open]:animate-in data-[state=closed]:animate-out"
         open={open}
         onOpenChange={setOpen}
       >

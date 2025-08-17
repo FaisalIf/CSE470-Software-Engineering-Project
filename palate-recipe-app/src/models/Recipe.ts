@@ -335,6 +335,47 @@ export class RecipeModel {
     });
   }
 
+  // Update recipe owned by author
+  static async updateByAuthor(
+    id: string,
+    authorId: string,
+    data: UpdateRecipeData
+  ) {
+    const { ingredients, nutritionInfo, ...recipeData } = data;
+    return await prisma.recipe.update({
+      where: { id, authorId },
+      data: {
+        ...recipeData,
+        ingredients: ingredients
+          ? {
+              deleteMany: {},
+              create: ingredients,
+            }
+          : undefined,
+        nutritionInfo: nutritionInfo
+          ? {
+              upsert: {
+                create: nutritionInfo,
+                update: nutritionInfo,
+              },
+            }
+          : undefined,
+      },
+      include: {
+        ingredients: true,
+        nutritionInfo: true,
+        author: {
+          select: {
+            id: true,
+            username: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
+    });
+  }
+
   // Delete recipe
   static async delete(id: string, authorId: string) {
     return await prisma.recipe.delete({
