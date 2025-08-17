@@ -46,7 +46,7 @@ export default function AppChrome({
                 <ChefHat className="w-8 h-8 text-orange-600" />
                 <span className="text-xl font-bold text-gray-900">Palate</span>
               </Link>
-              <div className="hidden md:flex items-center space-x-8">
+              <div className="hidden md:flex items-center space-x-8 ml-2 md:ml-4 lg:ml-6">
                 <Link
                   href="/"
                   className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 transition-colors"
