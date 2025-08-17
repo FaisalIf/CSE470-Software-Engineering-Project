@@ -13,16 +13,16 @@ Palate is a modern web application designed to transform the way people interact
 - Recipe Search: Users can search for recipes by keywords (e.g., "pasta", "chicken") to quickly find relevant dishes.
 - Trending Recipes: A section on the homepage or sidebar displays trending recipes, such as those with the most views or highest ratings.
 - User-Submitted Recipes: Users can submit their own recipes, including fields for ingredients, instructions, preparation time, and images.
+- Browse Users: Users can explore other users’ public profiles and discover their public recipe collections.
+- Edit User Profile: Users can edit their profile information, including name, username, bio, and profile photo.
 - Recipe Rating & Reviews: Users can rate recipes (e.g., 1-5 stars) and leave comments or reviews to help others choose what to cook.
+- My Recipes (Edit/Delete): Users can view a list of their own recipes and edit details (including optional nutrition info) or delete recipes they own.
 - Ingredient List Builder: Users can select multiple recipes, and the system compiles a consolidated shopping list of all required ingredients.
 - Nutritional Information Display: Each recipe displays estimated nutritional information, such as calories, protein, fat, and carbohydrates.
 - User Favorites/Bookmarks: Users can save their favorite recipes to a personal collection for quick access later.
 - User Recipe Collections: Users can create and manage their own themed collections of recipes (e.g., "Weeknight Dinners", "Desserts for Parties").
 - Automated Recipe Scaling: Users can adjust the number of servings for a recipe, and ingredient quantities are automatically recalculated.
 - Recently Viewed Recipes: Users can see a list of recipes they have recently viewed for easy reference and quick access.
-- Browse Users: Users can explore other users’ public profiles and discover their public recipe collections.
-- Edit User Profile: Users can edit their profile information, including name, username, bio, and profile photo.
-- My Recipes (Edit/Delete): Users can view a list of their own recipes and edit details (including optional nutrition info) or delete recipes they own.
 
 ## Non-Functional Requirements
 

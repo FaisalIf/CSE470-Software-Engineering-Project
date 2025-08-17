@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { triggerToast } from "@/components/Toaster";
 
 export default function DeleteRecipeButton({
   recipeId,
@@ -34,9 +35,17 @@ export default function DeleteRecipeButton({
       const json = await res.json();
       if (json.success) {
         setOpen(false);
+        triggerToast({ title: "Recipe deleted" });
         if (onDeleted) onDeleted();
         else router.refresh();
+      } else {
+        triggerToast({
+          title: "Failed to delete",
+          description: json.error || "Please try again.",
+        });
       }
+    } catch (e) {
+      triggerToast({ title: "Delete failed", description: String(e) });
     } finally {
       setDeleting(false);
     }
