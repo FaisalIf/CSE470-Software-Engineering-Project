@@ -8,8 +8,8 @@ out/
 Thumbs.db
 .vscode/
 
-# Environment and secrets (allow .env to be committed for easy setup)
-# .env
+# Environment and secrets
+.env
 .env.local
 .env.*.local
 

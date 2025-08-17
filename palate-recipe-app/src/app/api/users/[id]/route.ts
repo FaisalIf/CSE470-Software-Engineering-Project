@@ -3,9 +3,10 @@ import { UserModel } from "@/models/User";
 
 export async function GET(
   _: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const data = await UserModel.getPublicProfile(params.id);
+  const { id } = await params;
+  const data = await UserModel.getPublicProfile(id);
   if (!data)
     return NextResponse.json(
       { success: false, error: "Not found" },

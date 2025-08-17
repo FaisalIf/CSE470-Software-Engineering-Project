@@ -4,9 +4,10 @@ import { UserModel } from "@/models/User";
 export default async function PublicUserPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const data = await UserModel.getPublicProfile(params.id);
+  const { id } = await params;
+  const data = await UserModel.getPublicProfile(id);
   if (!data) return <div className="p-8">User not found</div>;
   const { user, collections } = data;
   return (
