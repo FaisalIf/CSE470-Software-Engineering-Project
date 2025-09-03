@@ -1,5 +1,11 @@
 # Palate — Cooking Recipe Platform
 
+## Deployment and SRS
+
+Find the platform deployed at [Vercel App](https://cse-470-software-engineering-projec.vercel.app/)
+
+Find the Software Requirements Specifications [here](https://drive.google.com/file/d/1nbw20FvrT9RbE1_v_12-lmfDL_vWQKoC/view?usp=sharing)
+
 ## Introduction
 
 Palate is an engaging web platform that reimagines how food lovers discover, share, and curate recipes. By blending intuitive technology with a passion for culinary creativity, Palate connects home cooks, food enthusiasts, and aspiring chefs in a vibrant, easy-to-use digital recipe ecosystem. Explore, collect, and share your favorite dishes with Palate, where every recipe tells a different story.
@@ -35,46 +41,71 @@ Palate is a modern web application designed to transform the way people interact
 
 ## Architecture
 
-- The project follows the Model-View-Controller (MVC) architecture:
-  - Models: Prisma schema and ORM (database models and data access logic in `palate-recipe-app/prisma/` and `src/lib/prisma.ts`).
-  - Views: Next.js React components and App Router pages located in `src/app/`, `src/views/`, and `src/components/`.
-  - Controllers: Server route handlers and controller modules that contain request handling and business logic (for example `src/controllers/`).
+This project follows the **MVC (Model-View-Controller)** pattern:
 
-## Technologies
+- **Models** (`src/models/`) - Database operations and business logic
+- **Views** (`src/views/`) - React components for UI presentation
+- **Controllers** (`src/controllers/`) - API request handlers and business logic coordination
+- **Services** (`src/services/`) - Reusable business logic and external integrations
 
-This project uses the following technologies and tools:
+## Tech Stack
 
-- Next.js (App Router) — React-based framework for frontend and server routes
-- TypeScript — static typing for JavaScript
-- Tailwind CSS — utility-first styling system
-- Prisma ORM — database access and migrations
-- PostgreSQL — relational database
-- Node.js (18+ recommended) — runtime
-- Supabase (client/server helpers present) — optional auth/data integrations (repository includes `src/lib/supabase.ts`)
-- ESLint / Prettier — linting and formatting (config files present)
-- PostCSS / Tailwind build tooling
+- **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes, Prisma ORM
+- **Database**: PostgreSQL (Supabase)
+- **Authentication**: NextAuth.js (ready to implement)
+- **Icons**: Lucide React
+- **Styling**: Tailwind CSS
 
-## Developer / Maintenance Manual (Quick start & commands)
+## Getting Started
 
 ### Prerequisites
 
-- Node 18+ (LTS recommended)
-- PostgreSQL database (local or managed)
-- npm
+- Node.js 18+ installed
+- Supabase account (for PostgreSQL database)
 
-### Quick start (Windows PowerShell)
+### 1. Environment Setup
 
-```powershell
-cd "palate-recipe-app"
-npm install
+Copy the environment template:
+
+```bash
 cp .env.example .env.local
-# edit .env.local and set DATABASE_URL and NEXTAUTH_SECRET (or other required vars)
-npx prisma generate
-npx prisma migrate deploy # or npx prisma migrate dev for iterative development
-npm run db:seed
-npm run dev
-# open http://localhost:3000
 ```
+
+Update `.env.local` with your Supabase database URL:
+
+```env
+DATABASE_URL="your_supabase_connection_string"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret-key"
+```
+
+### 2. Database Setup
+
+```bash
+# Generate Prisma client
+npx prisma generate
+
+# Create and apply database migrations
+npx prisma migrate dev --name init
+```
+
+### 3. Run Development Server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
 ### Project structure notes
 
