@@ -2,7 +2,7 @@
 
 ## Deployment and SRS
 
-Find the platform deployed at [Vercel App](https://cse-470-software-engineering-projec.vercel.app/)
+Find the platform deployed on [Vercel App](https://cse-470-software-engineering-projec.vercel.app/)
 
 Find the Software Requirements Specifications [here](https://drive.google.com/file/d/1nbw20FvrT9RbE1_v_12-lmfDL_vWQKoC/view?usp=sharing)
 
