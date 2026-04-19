@@ -1,43 +1,25 @@
-# Palate — Cooking Recipe Platform
+# Palate: A Cooking Recipe Media Platform
 
-## Deployment and SRS
+Palate is a comprehensive cooking recipe platform where users can discover, share, and manage their favorite dishes. Built with Next.js 14, TypeScript, Tailwind CSS, and PostgreSQL following the **MVC (Model-View-Controller)** architectural pattern.
 
-Find the platform deployed on [Vercel App](https://cse-470-software-engineering-projec.vercel.app/)
+## Features
 
-Find the Software Requirements Specifications [here](https://drive.google.com/file/d/1Ryr85yexcbSXO6u1DiZpxyIbG3-UdUOZ/view?usp=sharing)
+### Core Features
 
-## Introduction
-
-Palate is an engaging web platform that reimagines how food lovers discover, share, and curate recipes. By blending intuitive technology with a passion for culinary creativity, Palate connects home cooks, food enthusiasts, and aspiring chefs in a vibrant, easy-to-use digital recipe ecosystem. Explore, collect, and share your favorite dishes with Palate, where every recipe tells a different story.
-
-## Project Summary
-
-Palate is a modern web application designed to transform the way people interact with cooking and recipes online. With a clean, user-friendly interface, users can browse a diverse collection of recipes from various cuisines, contributed by a growing community of food lovers. The platform emphasizes simplicity and accessibility, offering straightforward registration and login, personalized user profiles, and the ability to create, edit, and save recipes. Each recipe features detailed instructions, ingredient lists, and nutritional information, making it easy for users to recreate dishes at home. Social features such as ratings, favorites, and recent views foster community engagement and help users discover trending and highly-rated recipes. Palate aims to make cooking inspiration accessible to everyone, without unnecessary complexity.
-
-## Functional Requirements
-
-- Recipe Search: Users can search for recipes by keywords (e.g., "pasta", "chicken") to quickly find relevant dishes.
-- Trending Recipes: A section on the homepage or sidebar displays trending recipes, such as those with the most views or highest ratings.
-- User-Submitted Recipes: Users can submit their own recipes, including fields for ingredients, instructions, preparation time, and images.
-- Browse Users: Users can explore other users’ public profiles and discover their public recipe collections.
-- Edit User Profile: Users can edit their profile information, including name, username, bio, and profile photo.
-- Recipe Rating & Reviews: Users can rate recipes (e.g., 1-5 stars) and leave comments or reviews to help others choose what to cook.
-- My Recipes (Edit/Delete): Users can view a list of their own recipes and edit details (including optional nutrition info) or delete recipes they own.
-- Ingredient List Builder: Users can select multiple recipes, and the system compiles a consolidated shopping list of all required ingredients.
-- Nutritional Information Display: Each recipe displays estimated nutritional information, such as calories, protein, fat, and carbohydrates.
-- User Favorites/Bookmarks: Users can save their favorite recipes to a personal collection for quick access later.
-- User Recipe Collections: Users can create and manage their own themed collections of recipes (e.g., "Weeknight Dinners", "Desserts for Parties").
-- Automated Recipe Scaling: Users can adjust the number of servings for a recipe, and ingredient quantities are automatically recalculated.
-- Recently Viewed Recipes: Users can see a list of recipes they have recently viewed for easy reference and quick access.
-
-## Non-Functional Requirements
-
-- Simplicity: The platform is designed for ease of use, with a straightforward interface and minimal setup.
-- Accessibility: The website is accessible from any modern web browser and device.
-- Performance: Recipe search, filtering, and navigation are responsive and fast for a smooth user experience.
-- Portability: All configuration is included so anyone can clone and run the project without extra setup.
-- Maintainability: The codebase is organized and documented for easy understanding and future extension.
-- Reliability: The system should handle typical user actions without crashing or data loss.
+1. **Recipe Search** - Search recipes by keywords, ingredients, cuisine, or difficulty
+2. **Trending Recipes** - Discover popular and trending recipes on homepage
+3. **AI Recipe Assistant Chatbot** - Minimized chat on homepage (bottom-right) that asks user preferences and suggests recipes.
+4. **Browse Users** - Discover other users and view their public profiles and collections
+5. **User-Submitted Recipes** - Allow users to submit recipes with ingredients, instructions, and prep time
+6. **Edit User Profile** - Update your name, username, bio, and photo
+7. **Recipe Rating & Reviews** - Users can rate recipes (1-5 stars) and leave reviews
+8. **My Recipes** - See your own recipes, with options to edit (including nutrition) or delete
+9. **Ingredient List Builder** - Generate consolidated shopping lists from multiple recipes
+10. **Nutritional Information** - Display estimated nutritional information for each recipe
+11. **User Favorites/Bookmarks** - Save favorite recipes to personal collections
+12. **User Recipe Collections** - Create themed collections (e.g., "Weeknight Dinners")
+13. **Automated Recipe Scaling** - Adjust ingredient quantities based on servings; choose 1x, 2x, 3x, or 4x of the base servings
+14. **Recently Viewed Recipes** - Track and display recently viewed recipes
 
 ## Architecture
 
@@ -53,6 +35,7 @@ This project follows the **MVC (Model-View-Controller)** pattern:
 - **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
 - **Backend**: Next.js API Routes, Prisma ORM
 - **Database**: PostgreSQL (Supabase)
+- **AI**: LangChain + Groq (Llama 3.1 8B Instant)
 - **Authentication**: NextAuth.js (ready to implement)
 - **Icons**: Lucide React
 - **Styling**: Tailwind CSS
@@ -78,6 +61,7 @@ Update `.env.local` with your Supabase database URL:
 DATABASE_URL="your_supabase_connection_string"
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your-secret-key"
+GROQ_API_KEY="your_groq_api_key"
 ```
 
 ### 2. Database Setup
@@ -98,6 +82,12 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+Homepage AI Assistant:
+
+- Chat icon is minimized at bottom-right.
+- Click to open.
+- Prompts user preferences and returns recipe suggestions.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
@@ -107,18 +97,8 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-### Project structure notes
+## Deploy on Vercel
 
-- `palate-recipe-app/src/app/` — Next.js App Router pages and layout
-- `palate-recipe-app/src/components/` — shared UI components
-- `palate-recipe-app/src/views/` — higher-level view components used by pages
-- `palate-recipe-app/src/app/api/` — server routes for recipes, users, collections, favorites, ratings, recent-views
-- `palate-recipe-app/prisma/` — schema and seed scripts
-- `palate-recipe-app/src/lib/prisma.ts` — single shared Prisma client instance
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-### Developer tips & troubleshooting
-
-- Prisma prepared statement errors (with PgBouncer): configure the pooling mode or use a PgBouncer-compatible connection string. Regenerate Prisma client with `npx prisma generate` after changing schema.
-- Hydration errors caused by nested anchors: keep interactive controls (buttons, menus) outside anchor tags to avoid link-in-link issues.
-- Dropdowns clipping: render dropdowns in a portal or ensure a high z-index and that parent containers don’t crop overflow.
-- If the dev server fails to start, inspect the terminal for missing env variables or DB connection errors.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
