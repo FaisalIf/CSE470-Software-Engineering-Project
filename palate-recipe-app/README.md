@@ -8,7 +8,7 @@ Palate is a comprehensive cooking recipe platform where users can discover, shar
 
 1. **Recipe Search** - Search recipes by keywords, ingredients, cuisine, or difficulty
 2. **Trending Recipes** - Discover popular and trending recipes on homepage
-3. AI Recipe Assistant Chatbot - Minimized chat on homepage (bottom-right) that asks user preferences and suggests recipes.
+3. **AI Recipe Assistant Chatbot** - Minimized chat on homepage (bottom-right) that asks user preferences and suggests recipes.
 4. **Browse Users** - Discover other users and view their public profiles and collections
 5. **User-Submitted Recipes** - Allow users to submit recipes with ingredients, instructions, and prep time
 6. **Edit User Profile** - Update your name, username, bio, and photo
