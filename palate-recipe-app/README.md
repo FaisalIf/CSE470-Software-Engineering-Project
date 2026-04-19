@@ -8,17 +8,18 @@ Palate is a comprehensive cooking recipe platform where users can discover, shar
 
 1. **Recipe Search** - Search recipes by keywords, ingredients, cuisine, or difficulty
 2. **Trending Recipes** - Discover popular and trending recipes on homepage
-3. **Browse Users** - Discover other users and view their public profiles and collections
-4. **User-Submitted Recipes** - Allow users to submit recipes with ingredients, instructions, and prep time
-5. **Edit User Profile** - Update your name, username, bio, and photo
-6. **Recipe Rating & Reviews** - Users can rate recipes (1-5 stars) and leave reviews
-7. **My Recipes** - See your own recipes, with options to edit (including nutrition) or delete
-8. **Ingredient List Builder** - Generate consolidated shopping lists from multiple recipes
-9. **Nutritional Information** - Display estimated nutritional information for each recipe
-10. **User Favorites/Bookmarks** - Save favorite recipes to personal collections
-11. **User Recipe Collections** - Create themed collections (e.g., "Weeknight Dinners")
-12. **Automated Recipe Scaling** - Adjust ingredient quantities based on servings; choose 1x, 2x, 3x, or 4x of the base servings
-13. **Recently Viewed Recipes** - Track and display recently viewed recipes
+3. AI Recipe Assistant Chatbot - Minimized chat on homepage (bottom-right) that asks user preferences and suggests recipes.
+4. **Browse Users** - Discover other users and view their public profiles and collections
+5. **User-Submitted Recipes** - Allow users to submit recipes with ingredients, instructions, and prep time
+6. **Edit User Profile** - Update your name, username, bio, and photo
+7. **Recipe Rating & Reviews** - Users can rate recipes (1-5 stars) and leave reviews
+8. **My Recipes** - See your own recipes, with options to edit (including nutrition) or delete
+9. **Ingredient List Builder** - Generate consolidated shopping lists from multiple recipes
+10. **Nutritional Information** - Display estimated nutritional information for each recipe
+11. **User Favorites/Bookmarks** - Save favorite recipes to personal collections
+12. **User Recipe Collections** - Create themed collections (e.g., "Weeknight Dinners")
+13. **Automated Recipe Scaling** - Adjust ingredient quantities based on servings; choose 1x, 2x, 3x, or 4x of the base servings
+14. **Recently Viewed Recipes** - Track and display recently viewed recipes
 
 ## Architecture
 
@@ -34,6 +35,7 @@ This project follows the **MVC (Model-View-Controller)** pattern:
 - **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
 - **Backend**: Next.js API Routes, Prisma ORM
 - **Database**: PostgreSQL (Supabase)
+- **AI**: LangChain + Groq (Llama 3.1 8B Instant)
 - **Authentication**: NextAuth.js (ready to implement)
 - **Icons**: Lucide React
 - **Styling**: Tailwind CSS
@@ -59,6 +61,7 @@ Update `.env.local` with your Supabase database URL:
 DATABASE_URL="your_supabase_connection_string"
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your-secret-key"
+GROQ_API_KEY="your_groq_api_key"
 ```
 
 ### 2. Database Setup
@@ -78,6 +81,12 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+Homepage AI Assistant:
+
+- Chat icon is minimized at bottom-right.
+- Click to open.
+- Prompts user preferences and returns recipe suggestions.
 
 ## Learn More
 

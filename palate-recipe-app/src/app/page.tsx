@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Chatbot from "@/components/Chatbot";
 
 export default function Home() {
   return (
@@ -139,6 +140,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* AI Chatbot Add-on */}
+      <Chatbot />
     </main>
   );
 }
